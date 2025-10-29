@@ -14,8 +14,9 @@ return new class extends Migration
         Schema::create('properties', function (Blueprint $table) {
             $table->id();
             $table->string('property_name');
-            $table->string('email')->nullable();
-            $table->string('phone')->nullable();
+            $table->string('property_Code')->unique();
+            $table->string('email');
+            $table->string('phone');
             $table->text('address')->nullable();
             $table->string('city')->nullable();
             $table->string('state')->nullable();
