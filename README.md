@@ -65,3 +65,18 @@ composer require "darkaonline/l5-swagger"
 php artisan vendor:publish --provider "L5Swagger\L5SwaggerServiceProvider"
 
 php artisan l5-swagger:generate
+
+<!-- php artisan install:api -->
+
+php artisan db:seed --class=SuperAdminSeeder
+
+composer require tymon/jwt-auth
+
+php artisan vendor:publish --provider="Tymon\JWTAuth\Providers\LaravelServiceProvider"
+
+php artisan jwt:secret
+
+
+composer require laravel/telescope --dev
+
+<!-- composer require php-open-source-saver/jwt-auth --no-interaction -->

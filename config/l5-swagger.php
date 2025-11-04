@@ -50,6 +50,11 @@ return [
         ],
     ],
     'defaults' => [
+        'security' => [
+            [
+            'bearerAuth' => [],
+            ],
+        ],
         'routes' => [
             /*
              * Route for accessing parsed swagger annotations.
@@ -169,6 +174,12 @@ return [
          * API security definitions. Will be generated into documentation file.
         */
         'securityDefinitions' => [
+            'bearerAuth' => [
+                'type' => 'apiKey',
+                'description' => 'Enter token in format: Bearer {your_token}',
+                'name' => 'Authorization',
+                'in' => 'header',
+            ],
             'securitySchemes' => [
                 /*
                  * Examples of Security schemes

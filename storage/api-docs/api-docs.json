@@ -1,0 +1,1914 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "HMCA API",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "operationId": "login",
+                "requestBody": {
+                    "description": "User credentials",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password",
+                                    "property_code"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "user@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password123"
+                                    },
+                                    "property_code": {
+                                        "type": "string",
+                                        "example": "PROP001"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login successful"
+                    }
+                },
+                "security": []
+            }
+        },
+        "/api/refresh-token": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Refresh JWT token",
+                "operationId": "refreshToken",
+                "responses": {
+                    "200": {
+                        "description": "New token generated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "token": {
+                                            "type": "string",
+                                            "example": "new.jwt.token.here"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/amenities": {
+            "get": {
+                "tags": [
+                    "Amenity"
+                ],
+                "summary": "Get all amenities",
+                "operationId": "6c8ea00705e8b164c5058fa2a7ba6660",
+                "responses": {
+                    "200": {
+                        "description": "List of amenities"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Amenity"
+                ],
+                "summary": "Create a new amenity",
+                "operationId": "1a73f723f42d140017238857cbe5bbd0",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "property_code",
+                                    "name"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Wi-Fi"
+                                    },
+                                    "active": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Amenity created successfully"
+                    }
+                }
+            }
+        },
+        "/api/amenities/{id}": {
+            "get": {
+                "tags": [
+                    "Amenity"
+                ],
+                "summary": "Get amenity by ID",
+                "operationId": "6b67e24d4200e272d4dde4ae50360cdb",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Amenity details fetched successfully"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Amenity"
+                ],
+                "summary": "Update an existing amenity",
+                "operationId": "2603e339f87a82b1db337d5357a34255",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Updated Wi-Fi"
+                                    },
+                                    "active": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Amenity updated successfully"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Amenity"
+                ],
+                "summary": "Delete an amenity",
+                "operationId": "b37361343e27277aa6bd259a8e03a35c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Amenity deleted successfully"
+                    }
+                }
+            }
+        },
+        "/api/reservations": {
+            "get": {
+                "tags": [
+                    "Reservation"
+                ],
+                "summary": "Get all reservations",
+                "operationId": "f6923d7a7fe0246469b5a0d3ac6c78f1",
+                "responses": {
+                    "200": {
+                        "description": "List of reservations fetched successfully"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Reservation"
+                ],
+                "summary": "Create a new reservation",
+                "operationId": "69675e7a7478217f58dc0c144b1037da",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "room_id",
+                                    "check_in",
+                                    "check_out",
+                                    "first_name"
+                                ],
+                                "properties": {
+                                    "room_id": {
+                                        "type": "string",
+                                        "example": "1"
+                                    },
+                                    "check_in": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2025-11-07 12:00:00"
+                                    },
+                                    "check_out": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2025-11-08 12:00:00"
+                                    },
+                                    "arrival_from": {
+                                        "type": "string",
+                                        "example": "Chennai"
+                                    },
+                                    "booking_type": {
+                                        "type": "string",
+                                        "example": "walk-in"
+                                    },
+                                    "booking_reference_no": {
+                                        "type": "string",
+                                        "example": "BK12345"
+                                    },
+                                    "purpose_of_visit": {
+                                        "type": "string",
+                                        "example": "Business"
+                                    },
+                                    "remarks": {
+                                        "type": "string",
+                                        "example": "Early check-in requested"
+                                    },
+                                    "adults": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "children": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "country_code": {
+                                        "type": "string",
+                                        "example": "+91"
+                                    },
+                                    "mobile_no": {
+                                        "type": "string",
+                                        "example": "9876543210"
+                                    },
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Mr"
+                                    },
+                                    "first_name": {
+                                        "type": "string",
+                                        "example": "John"
+                                    },
+                                    "last_name": {
+                                        "type": "string",
+                                        "example": "Doe"
+                                    },
+                                    "father_name": {
+                                        "type": "string",
+                                        "example": "Robert Doe"
+                                    },
+                                    "gender": {
+                                        "type": "string",
+                                        "example": "male"
+                                    },
+                                    "occupation": {
+                                        "type": "string",
+                                        "example": "Software Engineer"
+                                    },
+                                    "dob": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "1995-06-12"
+                                    },
+                                    "anniversary": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2020-02-14"
+                                    },
+                                    "nationality": {
+                                        "type": "string",
+                                        "example": "Indian"
+                                    },
+                                    "is_vip": {
+                                        "type": "boolean",
+                                        "example": false
+                                    },
+                                    "contact_type": {
+                                        "type": "string",
+                                        "example": "personal"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "john.doe@example.com"
+                                    },
+                                    "country": {
+                                        "type": "string",
+                                        "example": "India"
+                                    },
+                                    "state": {
+                                        "type": "string",
+                                        "example": "Tamil Nadu"
+                                    },
+                                    "city": {
+                                        "type": "string",
+                                        "example": "Chennai"
+                                    },
+                                    "zipcode": {
+                                        "type": "string",
+                                        "example": "600001"
+                                    },
+                                    "address": {
+                                        "type": "string",
+                                        "example": "123 Mount Road, Chennai"
+                                    },
+                                    "identity_type": {
+                                        "type": "string",
+                                        "example": "aadhaar"
+                                    },
+                                    "identity_no": {
+                                        "type": "string",
+                                        "example": "1234-5678-9123"
+                                    },
+                                    "identity_comments": {
+                                        "type": "string",
+                                        "example": "ID verified at front desk"
+                                    },
+                                    "front_doc": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "back_doc": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "guest_image": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "discount_reason": {
+                                        "type": "string",
+                                        "example": "Corporate discount"
+                                    },
+                                    "discount_percent": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": "10"
+                                    },
+                                    "commission_percent": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": "5"
+                                    },
+                                    "commission_amount": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": "500"
+                                    },
+                                    "payment_mode": {
+                                        "type": "string",
+                                        "example": "card"
+                                    },
+                                    "advance_amount": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": "2000"
+                                    },
+                                    "advance_remarks": {
+                                        "type": "string",
+                                        "example": "Paid via credit card"
+                                    },
+                                    "booking_charge": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": "4000"
+                                    },
+                                    "tax": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": "480"
+                                    },
+                                    "service_charge": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": "200"
+                                    },
+                                    "total": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": "4680"
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "example": "reserved"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Reservation created successfully"
+                    },
+                    "400": {
+                        "description": "Invalid input data"
+                    }
+                }
+            }
+        },
+        "/api/reservations/{id}": {
+            "get": {
+                "tags": [
+                    "Reservation"
+                ],
+                "summary": "Get a single reservation by ID",
+                "operationId": "48a6c23bf4228e7a568094251037285d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Reservation UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Reservation details"
+                    },
+                    "404": {
+                        "description": "Reservation not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Reservation"
+                ],
+                "summary": "Update an existing reservation",
+                "operationId": "6a7d216fbd84c5c648db4d91511464c3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Reservation UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "room_id": {
+                                        "type": "string",
+                                        "example": "1"
+                                    },
+                                    "check_in": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2025-11-07 12:00:00"
+                                    },
+                                    "check_out": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2025-11-08 12:00:00"
+                                    },
+                                    "arrival_from": {
+                                        "type": "string",
+                                        "example": "Chennai"
+                                    },
+                                    "booking_type": {
+                                        "type": "string",
+                                        "example": "online"
+                                    },
+                                    "booking_reference_no": {
+                                        "type": "string",
+                                        "example": "BK56789"
+                                    },
+                                    "purpose_of_visit": {
+                                        "type": "string",
+                                        "example": "Vacation"
+                                    },
+                                    "remarks": {
+                                        "type": "string",
+                                        "example": "Late checkout requested"
+                                    },
+                                    "adults": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "children": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "country_code": {
+                                        "type": "string",
+                                        "example": "+91"
+                                    },
+                                    "mobile_no": {
+                                        "type": "string",
+                                        "example": "9876543210"
+                                    },
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Mr"
+                                    },
+                                    "first_name": {
+                                        "type": "string",
+                                        "example": "John"
+                                    },
+                                    "last_name": {
+                                        "type": "string",
+                                        "example": "Doe"
+                                    },
+                                    "father_name": {
+                                        "type": "string",
+                                        "example": "Robert Doe"
+                                    },
+                                    "gender": {
+                                        "type": "string",
+                                        "example": "male"
+                                    },
+                                    "occupation": {
+                                        "type": "string",
+                                        "example": "Software Engineer"
+                                    },
+                                    "dob": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "1995-06-12"
+                                    },
+                                    "anniversary": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2020-02-14"
+                                    },
+                                    "nationality": {
+                                        "type": "string",
+                                        "example": "Indian"
+                                    },
+                                    "is_vip": {
+                                        "type": "boolean",
+                                        "example": false
+                                    },
+                                    "contact_type": {
+                                        "type": "string",
+                                        "example": "personal"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "john.doe@example.com"
+                                    },
+                                    "country": {
+                                        "type": "string",
+                                        "example": "India"
+                                    },
+                                    "state": {
+                                        "type": "string",
+                                        "example": "Tamil Nadu"
+                                    },
+                                    "city": {
+                                        "type": "string",
+                                        "example": "Chennai"
+                                    },
+                                    "zipcode": {
+                                        "type": "string",
+                                        "example": "600001"
+                                    },
+                                    "address": {
+                                        "type": "string",
+                                        "example": "123 Mount Road, Chennai"
+                                    },
+                                    "identity_type": {
+                                        "type": "string",
+                                        "example": "aadhaar"
+                                    },
+                                    "identity_no": {
+                                        "type": "string",
+                                        "example": "1234-5678-9123"
+                                    },
+                                    "identity_comments": {
+                                        "type": "string",
+                                        "example": "ID verified at front desk"
+                                    },
+                                    "front_doc": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "back_doc": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "guest_image": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "discount_reason": {
+                                        "type": "string",
+                                        "example": "Corporate discount"
+                                    },
+                                    "discount_percent": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": "10"
+                                    },
+                                    "commission_percent": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": "5"
+                                    },
+                                    "commission_amount": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": "500"
+                                    },
+                                    "payment_mode": {
+                                        "type": "string",
+                                        "example": "upi"
+                                    },
+                                    "advance_amount": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": "1500"
+                                    },
+                                    "advance_remarks": {
+                                        "type": "string",
+                                        "example": "UPI payment received"
+                                    },
+                                    "booking_charge": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": "4000"
+                                    },
+                                    "tax": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": "480"
+                                    },
+                                    "service_charge": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": "200"
+                                    },
+                                    "total": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": "4680"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Reservation updated successfully"
+                    },
+                    "404": {
+                        "description": "Reservation not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Reservation"
+                ],
+                "summary": "Delete a reservation",
+                "operationId": "6451a94fb73bec2470468253e8fd2629",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Reservation UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Reservation deleted successfully"
+                    },
+                    "404": {
+                        "description": "Reservation not found"
+                    }
+                }
+            }
+        },
+        "/api/reservations/{id}/check-in": {
+            "put": {
+                "tags": [
+                    "Reservation"
+                ],
+                "summary": "Mark reservation as checked-in",
+                "operationId": "60968b1a0bac77b305115f9b2b685c59",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Reservation UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Reservation checked in successfully"
+                    },
+                    "404": {
+                        "description": "Reservation not found"
+                    }
+                }
+            }
+        },
+        "/api/reservations/{id}/check-out": {
+            "put": {
+                "tags": [
+                    "Reservation"
+                ],
+                "summary": "Mark reservation as checked-out (room set to dirty)",
+                "operationId": "2e216bb7df583add666ec43eac14f828",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Reservation UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Reservation checked out successfully"
+                    },
+                    "404": {
+                        "description": "Reservation not found"
+                    }
+                }
+            }
+        },
+        "/api/reservations/{id}/cancel": {
+            "put": {
+                "tags": [
+                    "Reservation"
+                ],
+                "summary": "Cancel a reservation",
+                "operationId": "971205db9a941dc83419046396a943d0",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Reservation UUID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Reservation cancelled successfully"
+                    },
+                    "404": {
+                        "description": "Reservation not found"
+                    }
+                }
+            }
+        },
+        "/api/rooms": {
+            "get": {
+                "tags": [
+                    "Rooms"
+                ],
+                "summary": "Get all rooms for the property",
+                "operationId": "d21b885fa4b65b805664bb99f63b813b",
+                "responses": {
+                    "200": {
+                        "description": "List of rooms retrieved successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Rooms"
+                ],
+                "summary": "Create a new room",
+                "operationId": "2be15b7466e889b57d83ea9df858df14",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "room_type_id",
+                                    "room_number",
+                                    "capacity"
+                                ],
+                                "properties": {
+                                    "room_type_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "room_number": {
+                                        "type": "string",
+                                        "example": "A101"
+                                    },
+                                    "capacity": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "extra_capability": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "room_price": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 2500.5
+                                    },
+                                    "bed_charge": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 300
+                                    },
+                                    "room_size": {
+                                        "type": "string",
+                                        "example": "single"
+                                    },
+                                    "bed_number": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "bed_type": {
+                                        "type": "string",
+                                        "example": "kingbed"
+                                    },
+                                    "room_description": {
+                                        "type": "string",
+                                        "example": "Deluxe AC Room"
+                                    },
+                                    "reserve_condition": {
+                                        "type": "string",
+                                        "example": "Non-refundable"
+                                    },
+                                    "is_active": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "amenity_ids": {
+                                        "description": "Array of amenity IDs",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer",
+                                            "example": 1
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Room created successfully"
+                    },
+                    "400": {
+                        "description": "Invalid data provided"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/rooms/{id}": {
+            "get": {
+                "tags": [
+                    "Rooms"
+                ],
+                "summary": "Get a room by ID",
+                "operationId": "47c59cd36e0f3d2b14ed1372bcfc1ab4",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Room details fetched successfully"
+                    },
+                    "404": {
+                        "description": "Room not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Rooms"
+                ],
+                "summary": "Update an existing room",
+                "operationId": "b8b3072808ccead6c2faa70d7b2687e8",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "room_type_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "room_number": {
+                                        "type": "string",
+                                        "example": "A202"
+                                    },
+                                    "capacity": {
+                                        "type": "integer",
+                                        "example": 4
+                                    },
+                                    "room_price": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 3500
+                                    },
+                                    "bed_type": {
+                                        "type": "string",
+                                        "example": "kingbed"
+                                    },
+                                    "is_active": {
+                                        "type": "boolean",
+                                        "example": false
+                                    },
+                                    "extra_capability": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "bed_charge": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 400
+                                    },
+                                    "room_size": {
+                                        "type": "string",
+                                        "example": "single"
+                                    },
+                                    "bed_number": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "room_description": {
+                                        "type": "string",
+                                        "example": "Updated room description"
+                                    },
+                                    "reserve_condition": {
+                                        "type": "string",
+                                        "example": "Refundable"
+                                    },
+                                    "amenity_ids": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer",
+                                            "example": 1
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Room updated successfully"
+                    },
+                    "404": {
+                        "description": "Room not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Rooms"
+                ],
+                "summary": "Delete a room",
+                "operationId": "1f0e4034ee81be0e3dd3c730d5b468b8",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Room deleted successfully"
+                    },
+                    "404": {
+                        "description": "Room not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/room-type": {
+            "get": {
+                "tags": [
+                    "RoomType"
+                ],
+                "summary": "Get all room types",
+                "operationId": "2eb0825be8e744ca10072ed0ac0b2705",
+                "responses": {
+                    "200": {
+                        "description": "List of room types",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/RoomType"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "RoomType"
+                ],
+                "summary": "Create a new room type",
+                "operationId": "3ede62c4d334e3930b935b062f6cd767",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "property_code"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Deluxe Room"
+                                    },
+                                    "active": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Room type created successfully"
+                    },
+                    "409": {
+                        "description": "Room type already exists"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/room-type/{id}": {
+            "get": {
+                "tags": [
+                    "RoomType"
+                ],
+                "summary": "Get room type by ID",
+                "operationId": "c1b5c41b291d2ad8796e3c7ac12df8e3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Room type ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Room type found"
+                    },
+                    "404": {
+                        "description": "Room type not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "RoomType"
+                ],
+                "summary": "Update room type by ID",
+                "operationId": "ae8d3c82abc4ab2c0e9cb540b30a4e1e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Room type ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Premium Suite"
+                                    },
+                                    "active": {
+                                        "type": "boolean",
+                                        "example": false
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Room type updated successfully"
+                    },
+                    "404": {
+                        "description": "Room type not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "RoomType"
+                ],
+                "summary": "Delete room type by ID",
+                "operationId": "c58c84ed35790bbb3e1bdcdba251e23e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Room type ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Room type deleted successfully"
+                    },
+                    "404": {
+                        "description": "Room type not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/users": {
+            "get": {
+                "tags": [
+                    "User Management"
+                ],
+                "summary": "Get all users by property code",
+                "operationId": "343a76fa5f71a28c2f6fc84e28de51ca",
+                "responses": {
+                    "200": {
+                        "description": "Users fetched successfully"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "User Management"
+                ],
+                "summary": "Create a new user",
+                "operationId": "e6e1d6e3035c2bd64303215af8037398",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "password",
+                                    "role",
+                                    "property_code"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "John Doe"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "john@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "password123"
+                                    },
+                                    "role": {
+                                        "type": "string",
+                                        "example": "manager"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User created successfully"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/users/{id}": {
+            "put": {
+                "tags": [
+                    "User Management"
+                ],
+                "summary": "Update an existing user",
+                "operationId": "85382c1041c88ed4fbd59b63b225ff63",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "John Doe Updated"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "john@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "newpassword123"
+                                    },
+                                    "role": {
+                                        "type": "string",
+                                        "example": "admin"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User updated successfully"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "User Management"
+                ],
+                "summary": "Delete a user",
+                "operationId": "1bd31f772e2c7ee8425058fa436c7732",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "property_code"
+                                ],
+                                "properties": {
+                                    "property_code": {
+                                        "type": "string",
+                                        "example": "PROP001"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User deleted successfully"
+                    },
+                    "404": {
+                        "description": "User not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/property": {
+            "get": {
+                "tags": [
+                    "Property"
+                ],
+                "summary": "Get all properties",
+                "operationId": "b2d07f70478d089e6068f8f21a5abd6f",
+                "responses": {
+                    "200": {
+                        "description": "List of all properties",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Property"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Property"
+                ],
+                "summary": "Create a new property",
+                "operationId": "00db3d8c338dfd555174895b9d1c21f5",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "property_name",
+                                    "property_code",
+                                    "email",
+                                    "address"
+                                ],
+                                "properties": {
+                                    "property_name": {
+                                        "type": "string",
+                                        "example": "My Hotel"
+                                    },
+                                    "property_code": {
+                                        "type": "string",
+                                        "example": "PROP001"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "admin@myhotel.com"
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "example": "+1-555-555-5555"
+                                    },
+                                    "address": {
+                                        "type": "string",
+                                        "example": "123 Main St"
+                                    },
+                                    "city": {
+                                        "type": "string",
+                                        "example": "Chennai"
+                                    },
+                                    "state": {
+                                        "type": "string",
+                                        "example": "TN"
+                                    },
+                                    "zip_code": {
+                                        "type": "string",
+                                        "example": "600001"
+                                    },
+                                    "country": {
+                                        "type": "string",
+                                        "example": "India"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "A luxury hotel in downtown"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Property created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Property"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Duplicate property code or email"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/property/{id}": {
+            "get": {
+                "tags": [
+                    "Property"
+                ],
+                "summary": "Get a property by ID",
+                "operationId": "cc02fe1744e733b8bee0c0ba1ca92867",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Property ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Property found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Property"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Property not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Property"
+                ],
+                "summary": "Update an existing property",
+                "operationId": "719b82d89199455791b78f8e44a21d6c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Property ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "phone": {
+                                        "type": "string",
+                                        "example": "+1-555-555-5555"
+                                    },
+                                    "address": {
+                                        "type": "string",
+                                        "example": "123 Main St"
+                                    },
+                                    "city": {
+                                        "type": "string",
+                                        "example": "Chennai"
+                                    },
+                                    "state": {
+                                        "type": "string",
+                                        "example": "TN"
+                                    },
+                                    "zip_code": {
+                                        "type": "string",
+                                        "example": "600001"
+                                    },
+                                    "country": {
+                                        "type": "string",
+                                        "example": "India"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Updated description"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Property updated successfully"
+                    },
+                    "404": {
+                        "description": "Property not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Property"
+                ],
+                "summary": "Delete a property",
+                "operationId": "29e8b05becd1db2a31112aec25f32f61",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Property ID to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Property deleted successfully"
+                    },
+                    "404": {
+                        "description": "Property not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/property/temporaryDisable/{id}": {
+            "put": {
+                "tags": [
+                    "Property"
+                ],
+                "summary": "Temporarily disable property billing",
+                "operationId": "56cc1553295c422cc2cec3d38a832242",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Property ID to disable",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Property temporarily disabled successfully"
+                    },
+                    "404": {
+                        "description": "Property not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "RoomType": {
+                "title": "RoomType",
+                "description": "Room Type model",
+                "required": [
+                    "name",
+                    "property_code"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Deluxe Room"
+                    },
+                    "active": {
+                        "type": "boolean",
+                        "example": true
+                    }
+                },
+                "type": "object"
+            },
+            "Property": {
+                "title": "Property",
+                "description": "Property model",
+                "required": [
+                    "property_name",
+                    "property_code",
+                    "email"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "property_name": {
+                        "type": "string",
+                        "example": "My Hotel"
+                    },
+                    "property_code": {
+                        "type": "string",
+                        "example": "PROP001"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "info@example.com"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "example": "+1-555-555-5555"
+                    },
+                    "address": {
+                        "type": "string",
+                        "example": "123 Main St"
+                    },
+                    "city": {
+                        "type": "string",
+                        "example": "Chennai"
+                    },
+                    "state": {
+                        "type": "string",
+                        "example": "TN"
+                    },
+                    "zip_code": {
+                        "type": "string",
+                        "example": "600001"
+                    },
+                    "country": {
+                        "type": "string",
+                        "example": "India"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "A short description"
+                    },
+                    "billing_active": {
+                        "type": "boolean",
+                        "example": true
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "security": [
+        {
+            "bearerAuth": []
+        }
+    ],
+    "tags": [
+        {
+            "name": "Authentication"
+        },
+        {
+            "name": "Amenity",
+            "description": "Manage property amenities"
+        },
+        {
+            "name": "Reservation",
+            "description": "APIs for managing guest reservations"
+        },
+        {
+            "name": "Rooms",
+            "description": "Room management APIs"
+        },
+        {
+            "name": "RoomType",
+            "description": "Manage Room Types for each property"
+        },
+        {
+            "name": "User Management",
+            "description": "Manage users in the PMS system"
+        },
+        {
+            "name": "Property",
+            "description": "Manage hotel/property data"
+        }
+    ]
+}
