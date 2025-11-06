@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Models\SuperAdmin\Module;
+use App\Models\SuperAdmin\Property;
 use App\Models\User;
 use App\Repositories\SuperAdmin\Interfaces\PropertyRepositoryInterface;
 use App\Repositories\PMS\Interfaces\UserRepositoryInterface;
@@ -79,6 +81,20 @@ class AuthService
             ], 401);
         }
 
+        $modules = [];
+
+        if ($user->role === 'super_admin') {
+            // Super admin gets access to all modules
+            $modules = Module::pluck('code')->toArray();
+        } elseif ($user->property_id) {
+            // Property user: load assigned modules for that property
+            $property = Property::with(['modules' => function ($query) {
+                $query->wherePivot('enabled', true);
+            }])->find($user->property_id);
+
+            $modules = $property ? $property->modules->pluck('code')->toArray() : [];
+        }
+
         // Custom JWT claims
         $customClaims = [
             'id' => $user->id,
@@ -86,6 +102,7 @@ class AuthService
             'role' => $user->role,
             'property_id' => $user->property_id,
             'property_code' => $propertyCode,
+            'modules' => $modules
         ];
 
         // Generate JWT token
@@ -100,6 +117,7 @@ class AuthService
                 'role' => $user->role,
                 'property_id' => $user->property_id,
                 'property_code' => $propertyCode,
+                'modules' => $modules,
                 'token' => $token,
             ]
         ], 200);

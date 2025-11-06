@@ -15,6 +15,10 @@ use App\Repositories\PMS\AmenityRepository;
 use App\Repositories\PMS\Interfaces\ReservationRepositoryInterface;
 use App\Repositories\PMS\ReservationRepository;
 use App\Repositories\PMS\RoomTypeRepository;
+use App\Repositories\SuperAdmin\Interfaces\ModuleRepositoryInterface;
+use App\Repositories\SuperAdmin\Interfaces\PropertyModuleRepositoryInterface;
+use App\Repositories\SuperAdmin\ModuleRepository;
+use App\Repositories\SuperAdmin\PropertyModuleRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -26,6 +30,8 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(AmenityRepositoryInterface::class, AmenityRepository::class);
         $this->app->bind(RoomTypeRepositoryInterface::class, RoomTypeRepository::class);
         $this->app->bind(ReservationRepositoryInterface::class, ReservationRepository::class);
+        $this->app->bind(ModuleRepositoryInterface::class, ModuleRepository::class);
+        $this->app->bind(PropertyModuleRepositoryInterface::class, PropertyModuleRepository::class);
     }
 
     public function boot() {}

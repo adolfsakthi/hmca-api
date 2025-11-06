@@ -2,6 +2,7 @@
 
 namespace App\Services\PMS;
 
+use App\Http\Resources\RoomResource;
 use App\Repositories\PMS\Interfaces\RoomRepositoryInterface;
 
 class RoomService
@@ -19,7 +20,7 @@ class RoomService
         return response()->json([
             'success' => true,
             'message' => 'Rooms fetched successfully.',
-            'data' => $rooms,
+            'data' => RoomResource::collection($rooms),
         ]);
     }
 
@@ -36,7 +37,7 @@ class RoomService
         return response()->json([
             'success' => true,
             'message' => 'Room fetched successfully.',
-            'data' => $room,
+            'data' => new RoomResource($room),
         ]);
     }
 

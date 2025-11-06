@@ -83,13 +83,13 @@
                 ]
             }
         },
-        "/api/amenities": {
+        "/api/pms/amenities": {
             "get": {
                 "tags": [
                     "Amenity"
                 ],
                 "summary": "Get all amenities",
-                "operationId": "6c8ea00705e8b164c5058fa2a7ba6660",
+                "operationId": "e1b4dd3820f1c4551464b623c2905578",
                 "responses": {
                     "200": {
                         "description": "List of amenities"
@@ -101,7 +101,7 @@
                     "Amenity"
                 ],
                 "summary": "Create a new amenity",
-                "operationId": "1a73f723f42d140017238857cbe5bbd0",
+                "operationId": "60111e745d5803aa3f93eb1101e407da",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -133,13 +133,13 @@
                 }
             }
         },
-        "/api/amenities/{id}": {
+        "/api/pms/amenities/{id}": {
             "get": {
                 "tags": [
                     "Amenity"
                 ],
                 "summary": "Get amenity by ID",
-                "operationId": "6b67e24d4200e272d4dde4ae50360cdb",
+                "operationId": "f15b4a58dbf3bd9184aa863c026e6382",
                 "parameters": [
                     {
                         "name": "id",
@@ -161,7 +161,7 @@
                     "Amenity"
                 ],
                 "summary": "Update an existing amenity",
-                "operationId": "2603e339f87a82b1db337d5357a34255",
+                "operationId": "da0686192e68b94659c32e63f89617e8",
                 "parameters": [
                     {
                         "name": "id",
@@ -203,7 +203,7 @@
                     "Amenity"
                 ],
                 "summary": "Delete an amenity",
-                "operationId": "b37361343e27277aa6bd259a8e03a35c",
+                "operationId": "187681c2c553a290ab41744a221d90ca",
                 "parameters": [
                     {
                         "name": "id",
@@ -221,13 +221,13 @@
                 }
             }
         },
-        "/api/reservations": {
+        "/api/pms/reservations": {
             "get": {
                 "tags": [
                     "Reservation"
                 ],
                 "summary": "Get all reservations",
-                "operationId": "f6923d7a7fe0246469b5a0d3ac6c78f1",
+                "operationId": "c4505ccccb423747e2ad7e6463c2bd75",
                 "responses": {
                     "200": {
                         "description": "List of reservations fetched successfully"
@@ -239,7 +239,7 @@
                     "Reservation"
                 ],
                 "summary": "Create a new reservation",
-                "operationId": "69675e7a7478217f58dc0c144b1037da",
+                "operationId": "7466a2488ae1451e27ec0af547e521c7",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -468,13 +468,13 @@
                 }
             }
         },
-        "/api/reservations/{id}": {
+        "/api/pms/reservations/{id}": {
             "get": {
                 "tags": [
                     "Reservation"
                 ],
                 "summary": "Get a single reservation by ID",
-                "operationId": "48a6c23bf4228e7a568094251037285d",
+                "operationId": "5a03fdf7e12acda1cc15bd878f405a2a",
                 "parameters": [
                     {
                         "name": "id",
@@ -495,12 +495,12 @@
                     }
                 }
             },
-            "put": {
+            "post": {
                 "tags": [
                     "Reservation"
                 ],
-                "summary": "Update an existing reservation",
-                "operationId": "6a7d216fbd84c5c648db4d91511464c3",
+                "summary": "Update an existing reservation (all fields)",
+                "operationId": "18d3bf6e6d81316fae153d731b53f048",
                 "parameters": [
                     {
                         "name": "id",
@@ -518,6 +518,10 @@
                         "multipart/form-data": {
                             "schema": {
                                 "properties": {
+                                    "property_code": {
+                                        "type": "string",
+                                        "example": "H001"
+                                    },
                                     "room_id": {
                                         "type": "string",
                                         "example": "1"
@@ -607,8 +611,8 @@
                                         "example": "Indian"
                                     },
                                     "is_vip": {
-                                        "type": "boolean",
-                                        "example": false
+                                        "type": "integer",
+                                        "example": 0
                                     },
                                     "contact_type": {
                                         "type": "string",
@@ -734,7 +738,7 @@
                     "Reservation"
                 ],
                 "summary": "Delete a reservation",
-                "operationId": "6451a94fb73bec2470468253e8fd2629",
+                "operationId": "e3564329cb9f7ac6f88383e1e3e28db7",
                 "parameters": [
                     {
                         "name": "id",
@@ -756,13 +760,13 @@
                 }
             }
         },
-        "/api/reservations/{id}/check-in": {
+        "/api/pms/reservations/{id}/check-in": {
             "put": {
                 "tags": [
                     "Reservation"
                 ],
                 "summary": "Mark reservation as checked-in",
-                "operationId": "60968b1a0bac77b305115f9b2b685c59",
+                "operationId": "cceb678711ab48e000b70eed0468b258",
                 "parameters": [
                     {
                         "name": "id",
@@ -784,13 +788,13 @@
                 }
             }
         },
-        "/api/reservations/{id}/check-out": {
+        "/api/pms/reservations/{id}/check-out": {
             "put": {
                 "tags": [
                     "Reservation"
                 ],
                 "summary": "Mark reservation as checked-out (room set to dirty)",
-                "operationId": "2e216bb7df583add666ec43eac14f828",
+                "operationId": "cd516358d1b4a5760ea45071631956cc",
                 "parameters": [
                     {
                         "name": "id",
@@ -812,13 +816,13 @@
                 }
             }
         },
-        "/api/reservations/{id}/cancel": {
+        "/api/pms/reservations/{id}/cancel": {
             "put": {
                 "tags": [
                     "Reservation"
                 ],
                 "summary": "Cancel a reservation",
-                "operationId": "971205db9a941dc83419046396a943d0",
+                "operationId": "a4337c6bffb4d42c0359b60270088fce",
                 "parameters": [
                     {
                         "name": "id",
@@ -840,13 +844,13 @@
                 }
             }
         },
-        "/api/rooms": {
+        "/api/pms/rooms": {
             "get": {
                 "tags": [
                     "Rooms"
                 ],
                 "summary": "Get all rooms for the property",
-                "operationId": "d21b885fa4b65b805664bb99f63b813b",
+                "operationId": "27ec588efee8369f190d8811de74b45c",
                 "responses": {
                     "200": {
                         "description": "List of rooms retrieved successfully"
@@ -863,7 +867,7 @@
                     "Rooms"
                 ],
                 "summary": "Create a new room",
-                "operationId": "2be15b7466e889b57d83ea9df858df14",
+                "operationId": "5687d5293545eb9ae33f2f6446019516",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -954,13 +958,13 @@
                 ]
             }
         },
-        "/api/rooms/{id}": {
+        "/api/pms/rooms/{id}": {
             "get": {
                 "tags": [
                     "Rooms"
                 ],
                 "summary": "Get a room by ID",
-                "operationId": "47c59cd36e0f3d2b14ed1372bcfc1ab4",
+                "operationId": "631a33972365a1273f8f3921db6db400",
                 "parameters": [
                     {
                         "name": "id",
@@ -990,7 +994,7 @@
                     "Rooms"
                 ],
                 "summary": "Update an existing room",
-                "operationId": "b8b3072808ccead6c2faa70d7b2687e8",
+                "operationId": "b5fe77e0d75f05c0f3d436dc92ca11a1",
                 "parameters": [
                     {
                         "name": "id",
@@ -1089,7 +1093,7 @@
                     "Rooms"
                 ],
                 "summary": "Delete a room",
-                "operationId": "1f0e4034ee81be0e3dd3c730d5b468b8",
+                "operationId": "664823375067c645a6bfe96be6c7f2bf",
                 "parameters": [
                     {
                         "name": "id",
@@ -1115,13 +1119,13 @@
                 ]
             }
         },
-        "/api/room-type": {
+        "/api/pms/room-type": {
             "get": {
                 "tags": [
                     "RoomType"
                 ],
                 "summary": "Get all room types",
-                "operationId": "2eb0825be8e744ca10072ed0ac0b2705",
+                "operationId": "172a985b2cc942f55f44457f5223978b",
                 "responses": {
                     "200": {
                         "description": "List of room types",
@@ -1148,7 +1152,7 @@
                     "RoomType"
                 ],
                 "summary": "Create a new room type",
-                "operationId": "3ede62c4d334e3930b935b062f6cd767",
+                "operationId": "b692fc0f0bc203a9ba029c64cf83a762",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -1188,13 +1192,13 @@
                 ]
             }
         },
-        "/api/room-type/{id}": {
+        "/api/pms/room-type/{id}": {
             "get": {
                 "tags": [
                     "RoomType"
                 ],
                 "summary": "Get room type by ID",
-                "operationId": "c1b5c41b291d2ad8796e3c7ac12df8e3",
+                "operationId": "803ec0908c88995e4d591061b5ce0c46",
                 "parameters": [
                     {
                         "name": "id",
@@ -1225,7 +1229,7 @@
                     "RoomType"
                 ],
                 "summary": "Update room type by ID",
-                "operationId": "ae8d3c82abc4ab2c0e9cb540b30a4e1e",
+                "operationId": "577709d91269430f23b84d82b361956e",
                 "parameters": [
                     {
                         "name": "id",
@@ -1276,7 +1280,7 @@
                     "RoomType"
                 ],
                 "summary": "Delete room type by ID",
-                "operationId": "c58c84ed35790bbb3e1bdcdba251e23e",
+                "operationId": "2662061b6eab3e0b8a19801287839072",
                 "parameters": [
                     {
                         "name": "id",
@@ -1303,13 +1307,13 @@
                 ]
             }
         },
-        "/api/users": {
+        "/api/pms/users": {
             "get": {
                 "tags": [
                     "User Management"
                 ],
                 "summary": "Get all users by property code",
-                "operationId": "343a76fa5f71a28c2f6fc84e28de51ca",
+                "operationId": "e439fedcd4de1c4f6e060ecb561fb03a",
                 "responses": {
                     "200": {
                         "description": "Users fetched successfully"
@@ -1329,7 +1333,7 @@
                     "User Management"
                 ],
                 "summary": "Create a new user",
-                "operationId": "e6e1d6e3035c2bd64303215af8037398",
+                "operationId": "826c14935220a748ce9ecf9610bc5c99",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -1380,13 +1384,13 @@
                 ]
             }
         },
-        "/api/users/{id}": {
+        "/api/pms/users/{id}": {
             "put": {
                 "tags": [
                     "User Management"
                 ],
                 "summary": "Update an existing user",
-                "operationId": "85382c1041c88ed4fbd59b63b225ff63",
+                "operationId": "afbbc51f0ef2917d624fca38c074e1ba",
                 "parameters": [
                     {
                         "name": "id",
@@ -1445,7 +1449,7 @@
                     "User Management"
                 ],
                 "summary": "Delete a user",
-                "operationId": "1bd31f772e2c7ee8425058fa436c7732",
+                "operationId": "edc64e3e33623f8e5772693032ecad03",
                 "parameters": [
                     {
                         "name": "id",
@@ -1482,6 +1486,462 @@
                     },
                     "404": {
                         "description": "User not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/modules": {
+            "get": {
+                "tags": [
+                    "Modules"
+                ],
+                "summary": "Get all modules",
+                "operationId": "00d4fba388b4159c19b787f90bcec991",
+                "responses": {
+                    "200": {
+                        "description": "Modules fetched successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Modules fetched successfully."
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "code": {
+                                                        "type": "string",
+                                                        "example": "pms"
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Property Management System"
+                                                    },
+                                                    "description": {
+                                                        "type": "string",
+                                                        "example": "Manage properties and reservations"
+                                                    },
+                                                    "status": {
+                                                        "type": "string",
+                                                        "example": "active"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Modules"
+                ],
+                "summary": "Create a new module",
+                "operationId": "acd8a51d5cfc14e1a63c6fd90c33130d",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "code",
+                                    "name"
+                                ],
+                                "properties": {
+                                    "code": {
+                                        "type": "string",
+                                        "example": "pms"
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Property Management System"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Manages properties and reservations"
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "active",
+                                            "inactive"
+                                        ],
+                                        "example": "active"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Module created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Module created successfully."
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 3
+                                                },
+                                                "code": {
+                                                    "type": "string",
+                                                    "example": "pms"
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "Property Management System"
+                                                },
+                                                "description": {
+                                                    "type": "string",
+                                                    "example": "Manage properties"
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "example": "active"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict - module code already exists"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/modules/{id}": {
+            "get": {
+                "tags": [
+                    "Modules"
+                ],
+                "summary": "Get module by ID",
+                "operationId": "bcc7b8ac320b700b58ac3e57afc281e3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Module ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Module fetched successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Module fetched successfully."
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "code": {
+                                                    "type": "string",
+                                                    "example": "pms"
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "Property Management System"
+                                                },
+                                                "description": {
+                                                    "type": "string",
+                                                    "example": "Manage rooms & reservations"
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "example": "active"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Module not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Modules"
+                ],
+                "summary": "Update an existing module",
+                "operationId": "317f01e162eaf025185792d8f585c75c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Module ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "code": {
+                                        "type": "string",
+                                        "example": "hrms"
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "example": "HR Management System"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Manages employees"
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "active",
+                                            "inactive"
+                                        ],
+                                        "example": "inactive"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Module updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Module updated successfully."
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "code": {
+                                                    "type": "string",
+                                                    "example": "hrms"
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "HR Management System"
+                                                },
+                                                "description": {
+                                                    "type": "string",
+                                                    "example": "Manage employees"
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "example": "inactive"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Module not found"
+                    },
+                    "409": {
+                        "description": "Duplicate code conflict"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Modules"
+                ],
+                "summary": "Delete a module",
+                "operationId": "e622f58ef9edaed458a66a792ea049a0",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Module ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Module deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Module deleted successfully."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Module not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/modules/active": {
+            "get": {
+                "tags": [
+                    "Modules"
+                ],
+                "summary": "Get all active modules",
+                "operationId": "290337df4a877e6f2742cf0c92ef3aff",
+                "responses": {
+                    "200": {
+                        "description": "Active modules fetched successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Active modules fetched successfully."
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "code": {
+                                                        "type": "string",
+                                                        "example": "pms"
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Property Management System"
+                                                    },
+                                                    "status": {
+                                                        "type": "string",
+                                                        "example": "active"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -1780,6 +2240,180 @@
                     }
                 ]
             }
+        },
+        "/api/superadmin/properties/{id}/modules": {
+            "get": {
+                "tags": [
+                    "Property Modules"
+                ],
+                "summary": "Get all modules for a property",
+                "operationId": "70e9e7ba0b2bf36a9ea67726bd539824",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Modules fetched successfully for property"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Property Modules"
+                ],
+                "summary": "Assign modules to a property",
+                "operationId": "7200ef53720c408d3c6224407d1b991c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "modules": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "example": "pms"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Modules assigned successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Property Modules"
+                ],
+                "summary": "Remove modules from a property",
+                "operationId": "1a5d820cae99fe7504cd9b8f964df20b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "modules": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "example": "hrms"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Modules removed successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/superadmin/properties/{id}/modules/toggle": {
+            "patch": {
+                "tags": [
+                    "Property Modules"
+                ],
+                "summary": "Enable or disable a specific module for a property",
+                "operationId": "aacef91dcffc0f1adb8fcf61342f2702",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "module",
+                                    "enabled"
+                                ],
+                                "properties": {
+                                    "module": {
+                                        "type": "string",
+                                        "example": "pms"
+                                    },
+                                    "enabled": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Module toggled successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
         }
     },
     "components": {
@@ -1907,8 +2541,16 @@
             "description": "Manage users in the PMS system"
         },
         {
+            "name": "Modules",
+            "description": "Super Admin module management"
+        },
+        {
             "name": "Property",
             "description": "Manage hotel/property data"
+        },
+        {
+            "name": "Property Modules",
+            "description": "Super Admin - Manage module assignments for properties"
         }
     ]
 }

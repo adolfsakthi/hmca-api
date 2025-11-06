@@ -24,7 +24,7 @@ class UserController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/users",
+     *     path="/api/pms/users",
      *     tags={"User Management"},
      *     summary="Get all users by property code",
      *     security={{"bearerAuth":{}}},
@@ -41,7 +41,7 @@ class UserController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/users",
+     *     path="/api/pms/users",
      *     tags={"User Management"},
      *     summary="Create a new user",
      *     security={{"bearerAuth":{}}},
@@ -78,7 +78,7 @@ class UserController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/api/users/{id}",
+     *     path="/api/pms/users/{id}",
      *     tags={"User Management"},
      *     summary="Update an existing user",
      *     security={{"bearerAuth":{}}},
@@ -112,7 +112,7 @@ class UserController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/api/users/{id}",
+     *     path="/api/pms/users/{id}",
      *     tags={"User Management"},
      *     summary="Delete a user",
      *     security={{"bearerAuth":{}}},

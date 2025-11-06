@@ -3,6 +3,7 @@
 use App\Http\Middleware\HandleInternalServerError;
 use App\Http\Middleware\InjectPropertyCode;
 use App\Http\Middleware\JWTMiddleware;
+use App\Http\Middleware\ModuleAccessMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -20,7 +21,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => RoleMiddleware::class,
             'jwt.custom' => JWTMiddleware::class,
             'property.inject' => InjectPropertyCode::class,
-            'handle.500' => HandleInternalServerError::class,
+            // 'handle.500' => HandleInternalServerError::class,
+            'module.access' => ModuleAccessMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

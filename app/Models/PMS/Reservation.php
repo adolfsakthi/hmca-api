@@ -8,6 +8,7 @@ use App\Enums\PaymentModeEnum;
 use App\Enums\ReservationStatusEnum;
 use App\Models\SuperAdmin\Property;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class Reservation extends Model
@@ -31,6 +32,7 @@ class Reservation extends Model
         'country_code',
         'mobile_no',
         'title',
+        'source_of_booking',
         'first_name',
         'last_name',
         'father_name',
@@ -75,6 +77,7 @@ class Reservation extends Model
         });
     }
 
+
     public function room()
     {
         return $this->belongsTo(Room::class);
@@ -85,10 +88,30 @@ class Reservation extends Model
         'booking_type' => BookingTypeEnum::class,
         'gender' => GenderEnum::class,
         'PaymontMode' => PaymentModeEnum::class,
+        'is_vip' => 'boolean',
+        'source_of_booking' => 'pms'
     ];
 
     public function property()
     {
         return $this->belongsTo(Property::class, 'property_code', 'property_Code');
     }
+
+    public function getGuestImageUrlAttribute()
+    {
+        return $this->guest_image ? Storage::url($this->guest_image) : null;
+    }
+
+    public function getFrontDocUrlAttribute()
+    {
+        return $this->front_doc ? Storage::url($this->front_doc) : null;
+    }
+
+    public function getBackDocUrlAttribute()
+    {
+        return $this->back_doc ? Storage::url($this->back_doc) : null;
+    }
+
+    /** Automatically include these in API responses */
+    // protected $appends = ['guest_image_url', 'front_doc_url', 'back_doc_url'];
 }

@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->dateTime('check_out');
             $table->string('arrival_from')->nullable();
             $table->enum('booking_type', ['online', 'walk-in', 'corporate'])->default('walk-in');
+            $table->string('source_of_booking')->default('pms');
             $table->string('booking_reference_no')->nullable();
             $table->string('purpose_of_visit')->nullable();
             $table->text('remarks')->nullable();
@@ -40,7 +41,7 @@ return new class extends Migration {
             $table->string('zipcode')->nullable();
             $table->text('address')->nullable();
             $table->string('identity_type')->nullable();
-            $table->string('identity_no')->nullable();
+            $table->string('identity_no');
             $table->string('front_doc')->nullable();
             $table->string('back_doc')->nullable();
             $table->text('identity_comments')->nullable();

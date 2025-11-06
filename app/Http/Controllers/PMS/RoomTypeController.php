@@ -33,7 +33,7 @@ class RoomTypeController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/room-type",
+     *     path="/api/pms/room-type",
      *     tags={"RoomType"},
      *     summary="Get all room types",
      *     security={{"bearerAuth":{}}},
@@ -52,7 +52,7 @@ class RoomTypeController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/room-type",
+     *     path="/api/pms/room-type",
      *     tags={"RoomType"},
      *     summary="Create a new room type",
      *     security={{"bearerAuth":{}}},
@@ -81,7 +81,7 @@ class RoomTypeController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/room-type/{id}",
+     *     path="/api/pms/room-type/{id}",
      *     tags={"RoomType"},
      *     summary="Get room type by ID",
      *     security={{"bearerAuth":{}}},
@@ -104,7 +104,7 @@ class RoomTypeController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/api/room-type/{id}",
+     *     path="/api/pms/room-type/{id}",
      *     tags={"RoomType"},
      *     summary="Update room type by ID",
      *     security={{"bearerAuth":{}}},
@@ -139,7 +139,7 @@ class RoomTypeController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/api/room-type/{id}",
+     *     path="/api/pms/room-type/{id}",
      *     tags={"RoomType"},
      *     summary="Delete room type by ID",
      *     security={{"bearerAuth":{}}},

@@ -18,11 +18,11 @@ return new class extends Migration {
             $table->decimal('bed_charge', 10, 2)->nullable();
             $table->enum('room_size', ['single', 'double', 'tripal', 'king', 'queen', 'quad', 'others']);
             $table->integer('bed_number')->nullable();
-            $table->enum('bed_type',['kingbed', 'queenbed', 'electricbed', 'futonbed', 'mattressbed', 'airbed']);
+            $table->enum('bed_type', ['kingbed', 'queenbed', 'electricbed', 'futonbed', 'mattressbed', 'airbed']);
             $table->text('room_description')->nullable();
             $table->text('reserve_condition')->nullable();
             $table->boolean('is_active')->default(true);
-            $table->enum('status', ['available', 'occupied', 'maintenance', 'cleaning'])->default('available');
+            $table->enum('status', ['available', 'reserved', 'dirty', 'maintenance', 'cleaning', 'under_maintenance'])->default('available');
             $table->timestamps();
             $table->foreign('property_code')->references('property_code')->on('properties')->onDelete('cascade');
             $table->foreign('room_type_id')

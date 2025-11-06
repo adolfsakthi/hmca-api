@@ -23,7 +23,7 @@ class AmenityController extends Controller
     }
     /**
      * @OA\Get(
-     *     path="/api/amenities",
+     *     path="/api/pms/amenities",
      *     tags={"Amenity"},
      *     summary="Get all amenities",
      *     @OA\Response(response=200, description="List of amenities")
@@ -38,7 +38,7 @@ class AmenityController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/amenities/{id}",
+     *     path="/api/pms/amenities/{id}",
      *     tags={"Amenity"},
      *     summary="Get amenity by ID",
      *    @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),   
@@ -53,7 +53,7 @@ class AmenityController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/amenities",
+     *     path="/api/pms/amenities",
      *     tags={"Amenity"},
      *     summary="Create a new amenity",
      *     @OA\RequestBody(
@@ -80,7 +80,7 @@ class AmenityController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/api/amenities/{id}",
+     *     path="/api/pms/amenities/{id}",
      *     tags={"Amenity"},
      *     summary="Update an existing amenity",
      *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
@@ -109,7 +109,7 @@ class AmenityController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/api/amenities/{id}",
+     *     path="/api/pms/amenities/{id}",
      *     tags={"Amenity"},
      *     summary="Delete an amenity",
      *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),

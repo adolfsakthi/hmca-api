@@ -4,6 +4,8 @@ namespace App\Services\PMS;
 
 use App\Repositories\PMS\Interfaces\ReservationRepositoryInterface;
 use App\Repositories\PMS\Interfaces\RoomRepositoryInterface;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class ReservationService
@@ -47,13 +49,16 @@ class ReservationService
 
     public function createReservation(array $data)
     {
-        foreach (['guest_image' => 'guest_images', 'front_doc' => 'guest_docs', 'back_doc' => 'guest_docs'] as $key => $folder) {
-            if (isset($data[$key]) && $data[$key] instanceof \Illuminate\Http\UploadedFile) {
-                $data[$key] = $data[$key]->store($folder, 'public');
-            }
-        }
 
         $reservation = $this->reservationRepository->create($data);
+        foreach (['guest_image' => 'guest_images', 'front_doc' => 'guest_docs', 'back_doc' => 'guest_docs'] as $key => $folder) {
+            if (isset($data[$key]) && $data[$key] instanceof UploadedFile) {
+
+                $reservationFolder = "reservations/{$reservation->id}/{$folder}";
+
+                $data[$key] = $data[$key]->store($reservationFolder, 'public');
+            }
+        }
 
         $room = $this->roomRepository->findById($data['room_id']);
 
@@ -69,6 +74,8 @@ class ReservationService
     public function updateReservation(string $id, array $data)
     {
 
+
+
         $reservation = $this->reservationRepository->getByProperty($id, $data['property_code']);
         if (!$reservation) {
             return response()->json([
@@ -77,11 +84,33 @@ class ReservationService
             ], 404);
         }
 
-        $this->handleFileUpdate($reservation, $data, 'guest_image', 'guest_images');
-        $this->handleFileUpdate($reservation, $data, 'front_doc', 'guest_docs');
-        $this->handleFileUpdate($reservation, $data, 'back_doc', 'guest_docs');
+        foreach (
+            [
+                'guest_image' => 'guest_images',
+                'front_doc'   => 'guest_docs',
+                'back_doc'    => 'guest_docs'
+            ] as $key => $folder
+        ) {
+
+            if (isset($data[$key]) && $data[$key] instanceof UploadedFile) {
+                // Delete old file if exists
+                if (!empty($reservation->$key) && Storage::disk('public')->exists($reservation->$key)) {
+                    Storage::disk('public')->delete($reservation->$key);
+                }
+
+                // Store new file in same folder
+                $reservationFolder = "reservations/{$reservation->id}/{$folder}";
+                $path = $data[$key]->store($reservationFolder, 'public');
+                $data[$key] = $path;
+            } else {
+                // Don't overwrite if no new file provided
+                unset($data[$key]);
+            }
+        }
 
         $updatedReservation = $this->reservationRepository->update($reservation, $data);
+
+        Log::info(["after updated Data", $updatedReservation]);
 
         if (isset($data['status'])) {
             $room = $updatedReservation->room;
@@ -105,6 +134,8 @@ class ReservationService
 
     public function deleteReservation(string $id, string $propertyCode)
     {
+
+
         $reservation = $this->reservationRepository->getByProperty($id, $propertyCode);
         if (!$reservation) {
             return response()->json([
@@ -120,33 +151,20 @@ class ReservationService
 
         $this->reservationRepository->delete($reservation);
 
-        foreach (['guest_image', 'front_doc', 'back_doc'] as $fileField) {
-            if ($reservation->$fileField && Storage::disk('public')->exists($reservation->$fileField)) {
-                Storage::disk('public')->delete($reservation->$fileField);
-            }
+        $folder = "reservations/{$reservation->id}";
+        if (Storage::disk('public')->exists($folder)) {
+            Storage::disk('public')->deleteDirectory($folder);
         }
+
+        // foreach (['guest_image', 'front_doc', 'back_doc'] as $fileField) {
+        //     if ($reservation->$fileField && Storage::disk('public')->exists($reservation->$fileField)) {
+        //         Storage::disk('public')->delete($reservation->$fileField);
+        //     }
+        // }
 
         return response()->json([
             'success' => true,
             'message' => 'Reservation deleted successfully. Room set to available.',
         ]);
-    }
-
-
-    private function handleFileUpdate($reservation, array &$data, string $fieldName, string $folder)
-    {
-        if (isset($data[$fieldName]) && $data[$fieldName] instanceof \Illuminate\Http\UploadedFile) {
-
-            // Delete the old file if it exists
-            if ($reservation->$fieldName && Storage::disk('public')->exists($reservation->$fieldName)) {
-                Storage::disk('public')->delete($reservation->$fieldName);
-            }
-
-            // Store new file and update the data array
-            $data[$fieldName] = $data[$fieldName]->store($folder, 'public');
-        } else {
-            // No new file uploaded → keep existing file path
-            unset($data[$fieldName]);
-        }
     }
 }

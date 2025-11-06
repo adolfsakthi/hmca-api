@@ -13,4 +13,18 @@ class Property extends Model
     {
         return $this->hasMany(Room::class, 'property_code', 'property_Code');
     }
+
+    public function modules()
+    {
+        return $this->belongsToMany(Module::class, 'property_module')
+            ->withPivot('enabled')
+            ->wherePivot('enabled', true)
+            ->withTimestamps();
+    }
+
+    public function allModules()
+    {
+        return $this->belongsToMany(Module::class, 'property_module')
+            ->withPivot('enabled');
+    }
 }

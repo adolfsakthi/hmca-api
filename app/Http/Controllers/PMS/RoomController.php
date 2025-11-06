@@ -23,7 +23,7 @@ class RoomController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/rooms",
+     *     path="/api/pms/rooms",
      *     tags={"Rooms"},
      *     summary="Get all rooms for the property",
      *     security={{"bearerAuth": {}}},
@@ -38,7 +38,7 @@ class RoomController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/rooms",
+     *     path="/api/pms/rooms",
      *     tags={"Rooms"},
      *     summary="Create a new room",
      *     security={{"bearerAuth": {}}},
@@ -97,7 +97,7 @@ class RoomController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/rooms/{id}",
+     *     path="/api/pms/rooms/{id}",
      *     tags={"Rooms"},
      *     summary="Get a room by ID",
      *     security={{"bearerAuth": {}}},
@@ -114,7 +114,7 @@ class RoomController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/api/rooms/{id}",
+     *     path="/api/pms/rooms/{id}",
      *     tags={"Rooms"},
      *     summary="Update an existing room",
      *     security={{"bearerAuth": {}}},
@@ -170,7 +170,7 @@ class RoomController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/api/rooms/{id}",
+     *     path="/api/pms/rooms/{id}",
      *     tags={"Rooms"},
      *     summary="Delete a room",
      *     security={{"bearerAuth": {}}},
