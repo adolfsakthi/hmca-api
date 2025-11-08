@@ -23,7 +23,7 @@ class PropertyModuleController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/superadmin/properties/{id}/modules",
+     *     path="/api/properties/{id}/modules",
      *     summary="Get all modules for a property",
      *     tags={"Property Modules"},
      *     security={{"bearerAuth": {}}},
@@ -41,7 +41,7 @@ class PropertyModuleController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/superadmin/properties/{id}/modules",
+     *     path="/api/properties/{id}/modules",
      *     summary="Assign modules to a property",
      *     tags={"Property Modules"},
      *     security={{"bearerAuth": {}}},
@@ -69,7 +69,7 @@ class PropertyModuleController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/api/superadmin/properties/{id}/modules",
+     *     path="/api/properties/{id}/modules",
      *     summary="Remove modules from a property",
      *     tags={"Property Modules"},
      *     security={{"bearerAuth": {}}},
@@ -97,7 +97,7 @@ class PropertyModuleController extends Controller
 
     /**
      * @OA\Patch(
-     *     path="/api/superadmin/properties/{id}/modules/toggle",
+     *     path="/api/properties/{id}/modules/toggle",
      *     summary="Enable or disable a specific module for a property",
      *     tags={"Property Modules"},
      *     security={{"bearerAuth": {}}},

@@ -2,36 +2,24 @@
 
 namespace App\Repositories\PMS;
 
-use App\Repositories\PMS\Interfaces\ReservationRepositoryInterface;
 use App\Models\PMS\Reservation;
+use App\Repositories\PMS\Interfaces\ReservationRepositoryInterface;
 
 class ReservationRepository implements ReservationRepositoryInterface
 {
-
-    public function getAllbyProperty(string $propertyCode)
+    public function getAllByProperty(string $propertyCode)
     {
-        return Reservation::with('room')
+        return Reservation::with(['guest', 'room'])
             ->where('property_code', $propertyCode)
             ->latest()
             ->get();
     }
 
-    public function getByProperty(string $id, string $propertyCode)
+    public function findByIdByProperty(int $id, string $propertyCode)
     {
-        return Reservation::with('room')
+        return Reservation::with(['guest', 'room'])
             ->where('property_code', $propertyCode)
-            ->where('id', $id)
-            ->first();
-    }
-
-    public function getAll()
-    {
-        return Reservation::with('room')->latest()->get();
-    }
-
-    public function find(string $id)
-    {
-        return Reservation::with('room')->findOrFail($id);
+            ->find($id);
     }
 
     public function create(array $data)
@@ -39,15 +27,30 @@ class ReservationRepository implements ReservationRepositoryInterface
         return Reservation::create($data);
     }
 
-    public function update(Reservation $reservation, array $data)
+    public function update($reservation, array $data)
     {
         $reservation->update($data);
-        return $reservation;
+        return $reservation->fresh(['guest', 'room']);
     }
 
-    public function delete(Reservation $reservation): bool
+    public function delete($reservation)
     {
-        $reservation->delete();
-        return true;
+        return $reservation->delete();
+    }
+
+    public function getActiveReservations(string $propertyCode)
+    {
+        return Reservation::with(['guest', 'room'])
+            ->where('property_code', $propertyCode)
+            ->where('status', 'checked_in')
+            ->get();
+    }
+
+    public function getBetweenDates(string $propertyCode, $from, $to)
+    {
+        return Reservation::with(['guest', 'room'])
+            ->where('property_code', $propertyCode)
+            ->whereBetween('check_in', [$from, $to])
+            ->get();
     }
 }

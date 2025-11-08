@@ -2,23 +2,19 @@
 
 namespace App\Models\PMS;
 
-use App\Enums\BookingTypeEnum;
-use App\Enums\GenderEnum;
-use App\Enums\PaymentModeEnum;
-use App\Enums\ReservationStatusEnum;
 use App\Models\SuperAdmin\Property;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 class Reservation extends Model
 {
-    public $incrementing = false;
-    protected $keyType = 'string';
+    use HasFactory;
 
     protected $fillable = [
         'property_code',
         'room_id',
+        'guest_id',
         'check_in',
         'check_out',
         'arrival_from',
@@ -26,92 +22,87 @@ class Reservation extends Model
         'booking_reference_no',
         'purpose_of_visit',
         'remarks',
-        'room_id',
         'adults',
         'children',
-        'country_code',
-        'mobile_no',
-        'title',
         'source_of_booking',
-        'first_name',
-        'last_name',
-        'father_name',
-        'gender',
-        'occupation',
-        'dob',
-        'anniversary',
-        'nationality',
-        'is_vip',
-        'contact_type',
-        'email',
-        'country',
-        'state',
-        'city',
-        'zipcode',
-        'address',
-        'identity_type',
-        'identity_no',
-        'front_doc',
-        'back_doc',
-        'identity_comments',
-        'guest_image',
-        'discount_reason',
+        'booking_charge',
         'discount_percent',
+        'discount_reason',
         'commission_percent',
         'commission_amount',
+        'tax',
+        'service_charge',
+        'paid_amount',
+        'total',
         'payment_mode',
         'advance_amount',
         'advance_remarks',
-        'booking_charge',
-        'tax',
-        'service_charge',
-        'total',
-        'status'
+        'status',
     ];
 
-    protected static function boot()
-    {
-        parent::boot();
-        static::creating(function ($model) {
-            $model->id = (string) Str::uuid();
-        });
-    }
+    protected $casts = [
+        'check_in' => 'datetime',
+        'check_out' => 'datetime',
+        'booking_charge' => 'float',
+        'discount_percent' => 'float',
+        'commission_percent' => 'float',
+        'commission_amount' => 'float',
+        'tax' => 'float',
+        'service_charge' => 'float',
+        'total' => 'float',
+        'advance_amount' => 'float',
+    ];
 
+    // 🔗 Relationships
+    public function guest()
+    {
+        return $this->belongsTo(Guest::class);
+    }
 
     public function room()
     {
         return $this->belongsTo(Room::class);
     }
 
-    protected $casts = [
-        'status' => ReservationStatusEnum::class,
-        'booking_type' => BookingTypeEnum::class,
-        'gender' => GenderEnum::class,
-        'PaymontMode' => PaymentModeEnum::class,
-        'is_vip' => 'boolean',
-        'source_of_booking' => 'pms'
-    ];
-
     public function property()
     {
-        return $this->belongsTo(Property::class, 'property_code', 'property_Code');
+        return $this->belongsTo(Property::class, 'property_code', 'property_code');
     }
 
-    public function getGuestImageUrlAttribute()
+    // 🧮 Accessors
+    public function getNightsAttribute()
     {
-        return $this->guest_image ? Storage::url($this->guest_image) : null;
+        return Carbon::parse($this->check_in)->diffInDays(Carbon::parse($this->check_out)) ?: 1;
     }
 
-    public function getFrontDocUrlAttribute()
+    public function getFormattedCheckInAttribute()
     {
-        return $this->front_doc ? Storage::url($this->front_doc) : null;
+        return $this->check_in ? $this->check_in->format('d M Y, h:i A') : null;
     }
 
-    public function getBackDocUrlAttribute()
+    public function getFormattedCheckOutAttribute()
     {
-        return $this->back_doc ? Storage::url($this->back_doc) : null;
+        return $this->check_out ? $this->check_out->format('d M Y, h:i A') : null;
     }
 
-    /** Automatically include these in API responses */
-    // protected $appends = ['guest_image_url', 'front_doc_url', 'back_doc_url'];
+    public function getGrandTotalAttribute()
+    {
+        return round($this->total + $this->tax + $this->service_charge, 2);
+    }
+
+    // 🔎 Scopes
+    public function scopeForProperty($query, string $propertyCode)
+    {
+        return $query->where('property_code', $propertyCode);
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('status', 'checked_in');
+    }
+
+    public function scopeBetweenDates($query, $start, $end)
+    {
+        return $query->whereBetween('check_in', [$start, $end]);
+    }
 }

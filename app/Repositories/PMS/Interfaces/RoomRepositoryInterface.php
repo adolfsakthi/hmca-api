@@ -42,4 +42,6 @@ interface RoomRepositoryInterface
     public function delete(Room $room): bool;
 
     public function findByPropertyCode(string $room_number, string $propertyCode);
+
+    public function updateStatus(int $roomId, string $status);
 }

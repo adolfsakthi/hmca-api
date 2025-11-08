@@ -67,6 +67,7 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:6',
             'role' => 'required|string',
+            'property_code' => 'required|string'
         ]);
 
 
@@ -103,7 +104,7 @@ class UserController extends Controller
             'email' => 'sometimes|required|email|unique:users,email,' . $id,
             'password' => 'nullable|string|min:6',
             'role' => 'sometimes|required|string',
-            'propertyCode' => 'required|string',
+            'property_code' => 'required|string',
         ]);
 
         $response = $this->userService->updateUser($id, $validated);
@@ -117,13 +118,6 @@ class UserController extends Controller
      *     summary="Delete a user",
      *     security={{"bearerAuth":{}}},
      *     @OA\Parameter(name="id", in="path", required=true, description="User ID", @OA\Schema(type="integer")),
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             required={"property_code"},
-     *             @OA\Property(property="property_code", type="string", example="PROP001")
-     *         )
-     *     ),
      *     @OA\Response(response=200, description="User deleted successfully"),
      *     @OA\Response(response=404, description="User not found")
      * )

@@ -21,12 +21,12 @@ class AmenityRepository implements AmenityRepositoryInterface
 
     public function getAll()
     {
-        return Amenity::all();
+        return Amenity::orderBy('id', 'desc')->all();
     }
 
     public function getAllByProperty(string $propertyCode)
     {
-        return Amenity::where('property_code', $propertyCode)->get();
+        return Amenity::where('property_code', $propertyCode)->orderBy('id', 'asc')->get();
     }
 
     public function create(array $data): Amenity

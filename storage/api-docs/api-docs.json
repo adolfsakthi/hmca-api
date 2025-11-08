@@ -221,236 +221,811 @@
                 }
             }
         },
-        "/api/pms/reservations": {
+        "/api/pms/housekeeping": {
             "get": {
                 "tags": [
-                    "Reservation"
+                    "Housekeeping"
                 ],
-                "summary": "Get all reservations",
-                "operationId": "c4505ccccb423747e2ad7e6463c2bd75",
+                "summary": "Get all housekeeping records for a property",
+                "description": "Fetches a list of all housekeeping records linked to a specific property code.",
+                "operationId": "a060a5b530269c9324c58f21cf022303",
                 "responses": {
                     "200": {
-                        "description": "List of reservations fetched successfully"
+                        "description": "Housekeeping data fetched successfully."
+                    },
+                    "422": {
+                        "description": "Validation failed."
                     }
                 }
             },
             "post": {
                 "tags": [
-                    "Reservation"
+                    "Housekeeping"
+                ],
+                "summary": "Create a new housekeeping record",
+                "description": "Used by admin or housekeeping staff to create a housekeeping entry for a specific room.",
+                "operationId": "8040aaff33bd8fbba7bf3a0953522d4c",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "room_id",
+                                    "status"
+                                ],
+                                "properties": {
+                                    "room_id": {
+                                        "type": "integer",
+                                        "example": 101
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "clean",
+                                            "dirty",
+                                            "inspected",
+                                            "maintenance"
+                                        ],
+                                        "example": "dirty"
+                                    },
+                                    "assigned_to_user_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "remarks": {
+                                        "type": "string",
+                                        "example": "Guest checked out, needs cleaning"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Housekeeping record created successfully."
+                    },
+                    "422": {
+                        "description": "Validation error."
+                    }
+                }
+            }
+        },
+        "/api/pms/housekeeping/{id}": {
+            "get": {
+                "tags": [
+                    "Housekeeping"
+                ],
+                "summary": "Get a specific housekeeping record",
+                "description": "Fetch a single housekeeping entry by ID and property code.",
+                "operationId": "cfe364c02ec4b1b0b721fd44e1df52e8",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Housekeeping record ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Housekeeping record fetched successfully."
+                    },
+                    "404": {
+                        "description": "Record not found."
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Housekeeping"
+                ],
+                "summary": "Update housekeeping record",
+                "description": "Update housekeeping details such as status, remarks, or assigned staff.",
+                "operationId": "1621a8875e3ea01b118a1f0fbc39b91c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Housekeeping record ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "clean",
+                                            "dirty",
+                                            "inspected",
+                                            "maintenance"
+                                        ],
+                                        "example": "clean"
+                                    },
+                                    "assigned_to_user_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "remarks": {
+                                        "type": "string",
+                                        "example": "Room cleaned and inspected"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Housekeeping record updated successfully."
+                    },
+                    "404": {
+                        "description": "Record not found."
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Housekeeping"
+                ],
+                "summary": "Delete housekeeping record",
+                "description": "Removes a housekeeping entry from the database.",
+                "operationId": "c2646fbf13f4716e1b927afbb9257ad9",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Housekeeping record ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Housekeeping record deleted successfully."
+                    },
+                    "404": {
+                        "description": "Record not found."
+                    }
+                }
+            }
+        },
+        "/api/pms/pos": {
+            "get": {
+                "tags": [
+                    "POS"
+                ],
+                "summary": "List all POS sales for a property",
+                "operationId": "eca73c13355f99ab6d7f53c6184ae91d",
+                "parameters": [
+                    {
+                        "name": "property_code",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "POS"
+                ],
+                "summary": "Create POS sale (with Pay Later guest verification)",
+                "operationId": "0878b1a63fb2abfff5be96757caa21b8",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "items",
+                                    "payment_mode"
+                                ],
+                                "properties": {
+                                    "reservation_id": {
+                                        "type": "integer"
+                                    },
+                                    "customer_name": {
+                                        "type": "string"
+                                    },
+                                    "customer_email": {
+                                        "type": "string"
+                                    },
+                                    "customer_phone": {
+                                        "type": "string"
+                                    },
+                                    "items": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "pos_item_id": {
+                                                    "type": "integer"
+                                                },
+                                                "name": {
+                                                    "type": "string"
+                                                },
+                                                "unit_price": {
+                                                    "type": "number"
+                                                },
+                                                "quantity": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "tax": {
+                                        "type": "number"
+                                    },
+                                    "discount": {
+                                        "type": "number"
+                                    },
+                                    "payment_mode": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Pay Later",
+                                            "Cash",
+                                            "Card",
+                                            "UPI"
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Sale created"
+                    }
+                }
+            }
+        },
+        "/api/pms/pos/{id}/payment": {
+            "post": {
+                "tags": [
+                    "POS"
+                ],
+                "summary": "Add payment to Pay Later sale",
+                "operationId": "f339e0cb8ea6866ff9d708f36d98358b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "amount",
+                                    "payment_mode"
+                                ],
+                                "properties": {
+                                    "amount": {
+                                        "type": "number"
+                                    },
+                                    "payment_mode": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Cash",
+                                            "Card",
+                                            "UPI"
+                                        ]
+                                    },
+                                    "txn_reference": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Payment recorded"
+                    }
+                }
+            }
+        },
+        "/api/pms/pos/items": {
+            "get": {
+                "tags": [
+                    "POS Items"
+                ],
+                "summary": "Get all POS items for a property",
+                "operationId": "07f22663a2522e6ddd5e6def763f9b49",
+                "parameters": [
+                    {
+                        "name": "property_code",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of POS items"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "POS Items"
+                ],
+                "summary": "Create new POS item",
+                "operationId": "d82512f1bbad130fcc86cfa7502604fe",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "property_code",
+                                    "name",
+                                    "price"
+                                ],
+                                "properties": {
+                                    "property_code": {
+                                        "type": "string",
+                                        "example": "H001"
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Tea"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Hot tea"
+                                    },
+                                    "price": {
+                                        "type": "number",
+                                        "example": 30
+                                    },
+                                    "category": {
+                                        "type": "string",
+                                        "example": "Beverage"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "POS item created"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/pms/pos/items/{id}": {
+            "put": {
+                "tags": [
+                    "POS Items"
+                ],
+                "summary": "Update POS item",
+                "operationId": "5accc77798357d28b3c8715959c84a0b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "property_code": {
+                                        "type": "string",
+                                        "example": "H001"
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Tea - Large"
+                                    },
+                                    "price": {
+                                        "type": "number",
+                                        "example": 35
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "POS item updated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "POS Items"
+                ],
+                "summary": "Delete POS item",
+                "operationId": "50927baf6d5b002e80ecc8cd034babfc",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "property_code",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "POS item deleted"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/pms/rate-types": {
+            "get": {
+                "tags": [
+                    "Rate Types (PMS)"
+                ],
+                "summary": "Get all rate types for a property",
+                "description": "Retrieve all rate types associated with a given property code.",
+                "operationId": "319d1150a49c321ba8de7ddc215628ab",
+                "responses": {
+                    "200": {
+                        "description": "List of rate types fetched successfully"
+                    },
+                    "404": {
+                        "description": "Property not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Rate Types (PMS)"
+                ],
+                "summary": "Create a new rate type",
+                "description": "Admin can create a new rate type for a specific property and room type.",
+                "operationId": "d992acec3646f1dbc4360ea571426c02",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "property_code",
+                                    "room_type_id",
+                                    "name",
+                                    "base_price"
+                                ],
+                                "properties": {
+                                    "room_type_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Bed & Breakfast"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Includes breakfast for 2 adults."
+                                    },
+                                    "base_price": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 4000
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Rate type created successfully"
+                    },
+                    "422": {
+                        "description": "Validation failed"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/pms/rate-types/{id}": {
+            "get": {
+                "tags": [
+                    "Rate Types (PMS)"
+                ],
+                "summary": "Get a specific rate type by ID",
+                "description": "Fetch details of a specific rate type by ID within a property.",
+                "operationId": "816931fd3cfd7b4d460d6ff949ff4a6c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Rate type ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Rate type details fetched successfully"
+                    },
+                    "404": {
+                        "description": "Rate type not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Rate Types (PMS)"
+                ],
+                "summary": "Update an existing rate type",
+                "description": "Edit an existing rate type for a specific property.",
+                "operationId": "a5ce2030b334afcac92997fe1a4f3385",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Rate type ID to update",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "property_code"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Room Only"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Stay without meals"
+                                    },
+                                    "base_price": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 3500
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Rate type updated successfully"
+                    },
+                    "404": {
+                        "description": "Rate type not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Rate Types (PMS)"
+                ],
+                "summary": "Delete a rate type",
+                "description": "Remove a rate type from a property’s rate list.",
+                "operationId": "fff121ca704b8ed0edf0c04c3e621a3c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Rate type ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Rate type deleted successfully"
+                    },
+                    "404": {
+                        "description": "Rate type not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/pms/rate-types/room/{roomId}": {
+            "get": {
+                "tags": [
+                    "Rate Types (PMS)"
+                ],
+                "summary": "Get rate types by room",
+                "description": "Fetch all rate types available for a specific room based on its room type and property.",
+                "operationId": "548ea194c2b24df8b5a9c8b78a62b6b6",
+                "parameters": [
+                    {
+                        "name": "roomId",
+                        "in": "path",
+                        "description": "Room ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Rate types fetched successfully for the room"
+                    },
+                    "404": {
+                        "description": "Room not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/pms/reservations": {
+            "get": {
+                "tags": [
+                    "Reservations"
+                ],
+                "summary": "Get all reservations for a property",
+                "operationId": "c4505ccccb423747e2ad7e6463c2bd75",
+                "responses": {
+                    "200": {
+                        "description": "Reservations fetched successfully"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Reservations"
                 ],
                 "summary": "Create a new reservation",
                 "operationId": "7466a2488ae1451e27ec0af547e521c7",
                 "requestBody": {
                     "required": true,
                     "content": {
-                        "multipart/form-data": {
+                        "application/json": {
                             "schema": {
                                 "required": [
+                                    "property_code",
                                     "room_id",
+                                    "first_name",
                                     "check_in",
-                                    "check_out",
-                                    "first_name"
+                                    "check_out"
                                 ],
                                 "properties": {
+                                    "property_code": {
+                                        "type": "string"
+                                    },
                                     "room_id": {
-                                        "type": "string",
-                                        "example": "1"
+                                        "type": "integer"
+                                    },
+                                    "first_name": {
+                                        "type": "string"
+                                    },
+                                    "last_name": {
+                                        "type": "string"
+                                    },
+                                    "mobile_no": {
+                                        "type": "string"
                                     },
                                     "check_in": {
                                         "type": "string",
-                                        "format": "date-time",
-                                        "example": "2025-11-07 12:00:00"
+                                        "format": "date-time"
                                     },
                                     "check_out": {
                                         "type": "string",
-                                        "format": "date-time",
-                                        "example": "2025-11-08 12:00:00"
-                                    },
-                                    "arrival_from": {
-                                        "type": "string",
-                                        "example": "Chennai"
-                                    },
-                                    "booking_type": {
-                                        "type": "string",
-                                        "example": "walk-in"
-                                    },
-                                    "booking_reference_no": {
-                                        "type": "string",
-                                        "example": "BK12345"
-                                    },
-                                    "purpose_of_visit": {
-                                        "type": "string",
-                                        "example": "Business"
-                                    },
-                                    "remarks": {
-                                        "type": "string",
-                                        "example": "Early check-in requested"
-                                    },
-                                    "adults": {
-                                        "type": "integer",
-                                        "example": 2
-                                    },
-                                    "children": {
-                                        "type": "integer",
-                                        "example": 1
-                                    },
-                                    "country_code": {
-                                        "type": "string",
-                                        "example": "+91"
-                                    },
-                                    "mobile_no": {
-                                        "type": "string",
-                                        "example": "9876543210"
-                                    },
-                                    "title": {
-                                        "type": "string",
-                                        "example": "Mr"
-                                    },
-                                    "first_name": {
-                                        "type": "string",
-                                        "example": "John"
-                                    },
-                                    "last_name": {
-                                        "type": "string",
-                                        "example": "Doe"
-                                    },
-                                    "father_name": {
-                                        "type": "string",
-                                        "example": "Robert Doe"
-                                    },
-                                    "gender": {
-                                        "type": "string",
-                                        "example": "male"
-                                    },
-                                    "occupation": {
-                                        "type": "string",
-                                        "example": "Software Engineer"
-                                    },
-                                    "dob": {
-                                        "type": "string",
-                                        "format": "date",
-                                        "example": "1995-06-12"
-                                    },
-                                    "anniversary": {
-                                        "type": "string",
-                                        "format": "date",
-                                        "example": "2020-02-14"
-                                    },
-                                    "nationality": {
-                                        "type": "string",
-                                        "example": "Indian"
-                                    },
-                                    "is_vip": {
-                                        "type": "boolean",
-                                        "example": false
-                                    },
-                                    "contact_type": {
-                                        "type": "string",
-                                        "example": "personal"
-                                    },
-                                    "email": {
-                                        "type": "string",
-                                        "example": "john.doe@example.com"
-                                    },
-                                    "country": {
-                                        "type": "string",
-                                        "example": "India"
-                                    },
-                                    "state": {
-                                        "type": "string",
-                                        "example": "Tamil Nadu"
-                                    },
-                                    "city": {
-                                        "type": "string",
-                                        "example": "Chennai"
-                                    },
-                                    "zipcode": {
-                                        "type": "string",
-                                        "example": "600001"
-                                    },
-                                    "address": {
-                                        "type": "string",
-                                        "example": "123 Mount Road, Chennai"
-                                    },
-                                    "identity_type": {
-                                        "type": "string",
-                                        "example": "aadhaar"
-                                    },
-                                    "identity_no": {
-                                        "type": "string",
-                                        "example": "1234-5678-9123"
-                                    },
-                                    "identity_comments": {
-                                        "type": "string",
-                                        "example": "ID verified at front desk"
-                                    },
-                                    "front_doc": {
-                                        "type": "string",
-                                        "format": "binary"
-                                    },
-                                    "back_doc": {
-                                        "type": "string",
-                                        "format": "binary"
-                                    },
-                                    "guest_image": {
-                                        "type": "string",
-                                        "format": "binary"
-                                    },
-                                    "discount_reason": {
-                                        "type": "string",
-                                        "example": "Corporate discount"
-                                    },
-                                    "discount_percent": {
-                                        "type": "number",
-                                        "format": "float",
-                                        "example": "10"
-                                    },
-                                    "commission_percent": {
-                                        "type": "number",
-                                        "format": "float",
-                                        "example": "5"
-                                    },
-                                    "commission_amount": {
-                                        "type": "number",
-                                        "format": "float",
-                                        "example": "500"
-                                    },
-                                    "payment_mode": {
-                                        "type": "string",
-                                        "example": "card"
-                                    },
-                                    "advance_amount": {
-                                        "type": "number",
-                                        "format": "float",
-                                        "example": "2000"
-                                    },
-                                    "advance_remarks": {
-                                        "type": "string",
-                                        "example": "Paid via credit card"
-                                    },
-                                    "booking_charge": {
-                                        "type": "number",
-                                        "format": "float",
-                                        "example": "4000"
-                                    },
-                                    "tax": {
-                                        "type": "number",
-                                        "format": "float",
-                                        "example": "480"
-                                    },
-                                    "service_charge": {
-                                        "type": "number",
-                                        "format": "float",
-                                        "example": "200"
-                                    },
-                                    "total": {
-                                        "type": "number",
-                                        "format": "float",
-                                        "example": "4680"
-                                    },
-                                    "status": {
-                                        "type": "string",
-                                        "example": "reserved"
+                                        "format": "date-time"
                                     }
                                 },
                                 "type": "object"
@@ -461,9 +1036,6 @@
                 "responses": {
                     "201": {
                         "description": "Reservation created successfully"
-                    },
-                    "400": {
-                        "description": "Invalid input data"
                     }
                 }
             }
@@ -471,262 +1043,23 @@
         "/api/pms/reservations/{id}": {
             "get": {
                 "tags": [
-                    "Reservation"
+                    "Reservations"
                 ],
-                "summary": "Get a single reservation by ID",
+                "summary": "Get reservation by ID",
                 "operationId": "5a03fdf7e12acda1cc15bd878f405a2a",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "Reservation UUID",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "integer"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Reservation details"
-                    },
-                    "404": {
-                        "description": "Reservation not found"
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "Reservation"
-                ],
-                "summary": "Update an existing reservation (all fields)",
-                "operationId": "18d3bf6e6d81316fae153d731b53f048",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "Reservation UUID",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": false,
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "properties": {
-                                    "property_code": {
-                                        "type": "string",
-                                        "example": "H001"
-                                    },
-                                    "room_id": {
-                                        "type": "string",
-                                        "example": "1"
-                                    },
-                                    "check_in": {
-                                        "type": "string",
-                                        "format": "date-time",
-                                        "example": "2025-11-07 12:00:00"
-                                    },
-                                    "check_out": {
-                                        "type": "string",
-                                        "format": "date-time",
-                                        "example": "2025-11-08 12:00:00"
-                                    },
-                                    "arrival_from": {
-                                        "type": "string",
-                                        "example": "Chennai"
-                                    },
-                                    "booking_type": {
-                                        "type": "string",
-                                        "example": "online"
-                                    },
-                                    "booking_reference_no": {
-                                        "type": "string",
-                                        "example": "BK56789"
-                                    },
-                                    "purpose_of_visit": {
-                                        "type": "string",
-                                        "example": "Vacation"
-                                    },
-                                    "remarks": {
-                                        "type": "string",
-                                        "example": "Late checkout requested"
-                                    },
-                                    "adults": {
-                                        "type": "integer",
-                                        "example": 2
-                                    },
-                                    "children": {
-                                        "type": "integer",
-                                        "example": 1
-                                    },
-                                    "country_code": {
-                                        "type": "string",
-                                        "example": "+91"
-                                    },
-                                    "mobile_no": {
-                                        "type": "string",
-                                        "example": "9876543210"
-                                    },
-                                    "title": {
-                                        "type": "string",
-                                        "example": "Mr"
-                                    },
-                                    "first_name": {
-                                        "type": "string",
-                                        "example": "John"
-                                    },
-                                    "last_name": {
-                                        "type": "string",
-                                        "example": "Doe"
-                                    },
-                                    "father_name": {
-                                        "type": "string",
-                                        "example": "Robert Doe"
-                                    },
-                                    "gender": {
-                                        "type": "string",
-                                        "example": "male"
-                                    },
-                                    "occupation": {
-                                        "type": "string",
-                                        "example": "Software Engineer"
-                                    },
-                                    "dob": {
-                                        "type": "string",
-                                        "format": "date",
-                                        "example": "1995-06-12"
-                                    },
-                                    "anniversary": {
-                                        "type": "string",
-                                        "format": "date",
-                                        "example": "2020-02-14"
-                                    },
-                                    "nationality": {
-                                        "type": "string",
-                                        "example": "Indian"
-                                    },
-                                    "is_vip": {
-                                        "type": "integer",
-                                        "example": 0
-                                    },
-                                    "contact_type": {
-                                        "type": "string",
-                                        "example": "personal"
-                                    },
-                                    "email": {
-                                        "type": "string",
-                                        "example": "john.doe@example.com"
-                                    },
-                                    "country": {
-                                        "type": "string",
-                                        "example": "India"
-                                    },
-                                    "state": {
-                                        "type": "string",
-                                        "example": "Tamil Nadu"
-                                    },
-                                    "city": {
-                                        "type": "string",
-                                        "example": "Chennai"
-                                    },
-                                    "zipcode": {
-                                        "type": "string",
-                                        "example": "600001"
-                                    },
-                                    "address": {
-                                        "type": "string",
-                                        "example": "123 Mount Road, Chennai"
-                                    },
-                                    "identity_type": {
-                                        "type": "string",
-                                        "example": "aadhaar"
-                                    },
-                                    "identity_no": {
-                                        "type": "string",
-                                        "example": "1234-5678-9123"
-                                    },
-                                    "identity_comments": {
-                                        "type": "string",
-                                        "example": "ID verified at front desk"
-                                    },
-                                    "front_doc": {
-                                        "type": "string",
-                                        "format": "binary"
-                                    },
-                                    "back_doc": {
-                                        "type": "string",
-                                        "format": "binary"
-                                    },
-                                    "guest_image": {
-                                        "type": "string",
-                                        "format": "binary"
-                                    },
-                                    "discount_reason": {
-                                        "type": "string",
-                                        "example": "Corporate discount"
-                                    },
-                                    "discount_percent": {
-                                        "type": "number",
-                                        "format": "float",
-                                        "example": "10"
-                                    },
-                                    "commission_percent": {
-                                        "type": "number",
-                                        "format": "float",
-                                        "example": "5"
-                                    },
-                                    "commission_amount": {
-                                        "type": "number",
-                                        "format": "float",
-                                        "example": "500"
-                                    },
-                                    "payment_mode": {
-                                        "type": "string",
-                                        "example": "upi"
-                                    },
-                                    "advance_amount": {
-                                        "type": "number",
-                                        "format": "float",
-                                        "example": "1500"
-                                    },
-                                    "advance_remarks": {
-                                        "type": "string",
-                                        "example": "UPI payment received"
-                                    },
-                                    "booking_charge": {
-                                        "type": "number",
-                                        "format": "float",
-                                        "example": "4000"
-                                    },
-                                    "tax": {
-                                        "type": "number",
-                                        "format": "float",
-                                        "example": "480"
-                                    },
-                                    "service_charge": {
-                                        "type": "number",
-                                        "format": "float",
-                                        "example": "200"
-                                    },
-                                    "total": {
-                                        "type": "number",
-                                        "format": "float",
-                                        "example": "4680"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Reservation updated successfully"
+                        "description": "Reservation fetched successfully"
                     },
                     "404": {
                         "description": "Reservation not found"
@@ -735,7 +1068,7 @@
             },
             "delete": {
                 "tags": [
-                    "Reservation"
+                    "Reservations"
                 ],
                 "summary": "Delete a reservation",
                 "operationId": "e3564329cb9f7ac6f88383e1e3e28db7",
@@ -743,10 +1076,9 @@
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "Reservation UUID",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "integer"
                         }
                     }
                 ],
@@ -760,86 +1092,169 @@
                 }
             }
         },
-        "/api/pms/reservations/{id}/check-in": {
-            "put": {
+        "/api/pms/reservations/{id}/update": {
+            "post": {
                 "tags": [
-                    "Reservation"
+                    "Reservations"
                 ],
-                "summary": "Mark reservation as checked-in",
-                "operationId": "cceb678711ab48e000b70eed0468b258",
+                "summary": "Update reservation or perform check-in/check-out",
+                "operationId": "f5e981359b3646456decf51544160baa",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "Reservation UUID",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "integer"
                         }
                     }
                 ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "property_code": {
+                                        "type": "string"
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "reserved",
+                                            "checked_in",
+                                            "checked_out",
+                                            "cancelled"
+                                        ]
+                                    },
+                                    "booking_charge": {
+                                        "type": "number"
+                                    },
+                                    "discount_percent": {
+                                        "type": "number"
+                                    },
+                                    "commission_percent": {
+                                        "type": "number"
+                                    },
+                                    "commission_amount": {
+                                        "type": "number"
+                                    },
+                                    "service_charge": {
+                                        "type": "number"
+                                    },
+                                    "advance_amount": {
+                                        "type": "number"
+                                    },
+                                    "paid_amount": {
+                                        "type": "number"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
-                        "description": "Reservation checked in successfully"
+                        "description": "Reservation updated successfully"
                     },
-                    "404": {
-                        "description": "Reservation not found"
+                    "422": {
+                        "description": "Validation error or insufficient payment"
                     }
                 }
             }
         },
-        "/api/pms/reservations/{id}/check-out": {
-            "put": {
+        "/api/pms/reservations/{id}/checkin": {
+            "post": {
                 "tags": [
-                    "Reservation"
+                    "Reservations"
                 ],
-                "summary": "Mark reservation as checked-out (room set to dirty)",
-                "operationId": "cd516358d1b4a5760ea45071631956cc",
+                "summary": "Check-in guest for reservation",
+                "description": "Validates guest details and room availability before check-in.",
+                "operationId": "7009a46a4c83d807f573eb9bb6ed9953",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "Reservation UUID",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "integer"
                         }
                     }
                 ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "property_code"
+                                ],
+                                "properties": {
+                                    "property_code": {
+                                        "type": "string"
+                                    },
+                                    "identity_type": {
+                                        "type": "string"
+                                    },
+                                    "identity_no": {
+                                        "type": "string"
+                                    },
+                                    "front_doc": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "back_doc": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "guest_image": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
-                        "description": "Reservation checked out successfully"
+                        "description": "Guest checked in successfully"
                     },
-                    "404": {
-                        "description": "Reservation not found"
+                    "422": {
+                        "description": "Missing guest details"
+                    },
+                    "409": {
+                        "description": "Room not available"
                     }
                 }
             }
         },
-        "/api/pms/reservations/{id}/cancel": {
-            "put": {
+        "/api/pms/reservations/{id}/checkout": {
+            "post": {
                 "tags": [
-                    "Reservation"
+                    "Reservations"
                 ],
-                "summary": "Cancel a reservation",
-                "operationId": "a4337c6bffb4d42c0359b60270088fce",
+                "summary": "Check-out guest and close reservation",
+                "description": "Ensures full payment is completed before checkout.",
+                "operationId": "ac1389f799fb13ac0c5429124840abe7",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "Reservation UUID",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "integer"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Reservation cancelled successfully"
+                        "description": "Guest checked out successfully"
                     },
-                    "404": {
-                        "description": "Reservation not found"
+                    "422": {
+                        "description": "Total amount not paid"
                     }
                 }
             }
@@ -1307,6 +1722,177 @@
                 ]
             }
         },
+        "/api/pms/taxes": {
+            "get": {
+                "tags": [
+                    "Taxes"
+                ],
+                "summary": "Get all taxes for a property",
+                "operationId": "3ab00d1f38138032ba3dd0d0e941ec04",
+                "parameters": [
+                    {
+                        "name": "property_code",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of taxes"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Taxes"
+                ],
+                "summary": "Create new tax",
+                "operationId": "56b561cbb5bba724a68566130560265e",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "property_code",
+                                    "name",
+                                    "percentage"
+                                ],
+                                "properties": {
+                                    "property_code": {
+                                        "type": "string",
+                                        "example": "H001"
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "example": "CGST"
+                                    },
+                                    "percentage": {
+                                        "type": "number",
+                                        "example": 9
+                                    },
+                                    "is_active": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Tax created successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/pms/taxes/{id}": {
+            "put": {
+                "tags": [
+                    "Taxes"
+                ],
+                "summary": "Update tax for property",
+                "operationId": "5a25f00f568d77653636795d5b002228",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "property_code": {
+                                        "type": "string",
+                                        "example": "H001"
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "example": "SGST"
+                                    },
+                                    "percentage": {
+                                        "type": "number",
+                                        "example": 9
+                                    },
+                                    "is_active": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Tax updated successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Taxes"
+                ],
+                "summary": "Delete tax for property",
+                "operationId": "c9a8054899e8cb0d347aab74d5a11e2f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "property_code",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tax deleted successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/pms/users": {
             "get": {
                 "tags": [
@@ -1461,25 +2047,6 @@
                         }
                     }
                 ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "property_code"
-                                ],
-                                "properties": {
-                                    "property_code": {
-                                        "type": "string",
-                                        "example": "PROP001"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
                 "responses": {
                     "200": {
                         "description": "User deleted successfully"
@@ -2241,13 +2808,13 @@
                 ]
             }
         },
-        "/api/superadmin/properties/{id}/modules": {
+        "/api/properties/{id}/modules": {
             "get": {
                 "tags": [
                     "Property Modules"
                 ],
                 "summary": "Get all modules for a property",
-                "operationId": "70e9e7ba0b2bf36a9ea67726bd539824",
+                "operationId": "a806112cac32e7af68f8ffcc77c346de",
                 "parameters": [
                     {
                         "name": "id",
@@ -2274,7 +2841,7 @@
                     "Property Modules"
                 ],
                 "summary": "Assign modules to a property",
-                "operationId": "7200ef53720c408d3c6224407d1b991c",
+                "operationId": "ba2de77cc570c94a2f66841151f12881",
                 "parameters": [
                     {
                         "name": "id",
@@ -2320,7 +2887,7 @@
                     "Property Modules"
                 ],
                 "summary": "Remove modules from a property",
-                "operationId": "1a5d820cae99fe7504cd9b8f964df20b",
+                "operationId": "79d4fb5a5ecc340279a1b4ed0a0221d9",
                 "parameters": [
                     {
                         "name": "id",
@@ -2362,13 +2929,13 @@
                 ]
             }
         },
-        "/api/superadmin/properties/{id}/modules/toggle": {
+        "/api/properties/{id}/modules/toggle": {
             "patch": {
                 "tags": [
                     "Property Modules"
                 ],
                 "summary": "Enable or disable a specific module for a property",
-                "operationId": "aacef91dcffc0f1adb8fcf61342f2702",
+                "operationId": "0c67db544a1dea8f04854955adb87bd3",
                 "parameters": [
                     {
                         "name": "id",
@@ -2525,8 +3092,20 @@
             "description": "Manage property amenities"
         },
         {
-            "name": "Reservation",
-            "description": "APIs for managing guest reservations"
+            "name": "Housekeeping",
+            "description": "Manage housekeeping operations like cleaning, inspection, and maintenance."
+        },
+        {
+            "name": "POS",
+            "description": "Point of Sale (Restaurant / Room Service)"
+        },
+        {
+            "name": "Rate Types (PMS)",
+            "description": "Manage room rate types such as Room Only, Bed & Breakfast, etc."
+        },
+        {
+            "name": "Reservations",
+            "description": "API Endpoints for Property Management System Reservations"
         },
         {
             "name": "Rooms",
@@ -2551,6 +3130,14 @@
         {
             "name": "Property Modules",
             "description": "Super Admin - Manage module assignments for properties"
+        },
+        {
+            "name": "POS Items",
+            "description": "POS Items"
+        },
+        {
+            "name": "Taxes",
+            "description": "Taxes"
         }
     ]
 }

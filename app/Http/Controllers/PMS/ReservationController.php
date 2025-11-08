@@ -5,12 +5,12 @@ namespace App\Http\Controllers\PMS;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\PMS\ReservationService;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 
 /**
  * @OA\Tag(
- *     name="Reservation",
- *     description="APIs for managing guest reservations"
+ *     name="Reservations",
+ *     description="API Endpoints for Property Management System Reservations"
  * )
  */
 class ReservationController extends Controller
@@ -25,305 +25,220 @@ class ReservationController extends Controller
     /**
      * @OA\Get(
      *     path="/api/pms/reservations",
-     *     tags={"Reservation"},
-     *     summary="Get all reservations",
-     *     @OA\Response(
-     *         response=200,
-     *         description="List of reservations fetched successfully"
-     *     )
+     *     tags={"Reservations"},
+     *     summary="Get all reservations for a property",
+     *     @OA\Response(response=200, description="Reservations fetched successfully")
      * )
      */
     public function index(Request $request)
     {
-        $propertyCode = $request->get('property_code');
-        return $this->reservationService->getAllReservations($propertyCode);
+        $request->validate([
+            'property_code' => 'required|string'
+        ]);
+
+        return $this->reservationService->getAllReservations($request->property_code);
     }
 
     /**
      * @OA\Get(
      *     path="/api/pms/reservations/{id}",
-     *     tags={"Reservation"},
-     *     summary="Get a single reservation by ID",
+     *     tags={"Reservations"},
+     *     summary="Get reservation by ID",
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         required=true,
-     *         description="Reservation UUID",
-     *         @OA\Schema(type="string")
+     *         @OA\Schema(type="integer")
      *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Reservation details"
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Reservation not found"
-     *     )
+     *     @OA\Response(response=200, description="Reservation fetched successfully"),
+     *     @OA\Response(response=404, description="Reservation not found")
      * )
      */
-    public function show($id, Request $request)
+    public function show(Request $request, int $id)
     {
-        $propertyCode = $request->get('property_code');
-        return $this->reservationService->getReservationById($id, $propertyCode);
+        $request->validate(['property_code' => 'required|string']);
+        return $this->reservationService->getReservationById($id, $request->property_code);
     }
 
     /**
      * @OA\Post(
      *     path="/api/pms/reservations",
-     *     tags={"Reservation"},
+     *     tags={"Reservations"},
      *     summary="Create a new reservation",
      *     @OA\RequestBody(
      *         required=true,
-     *         @OA\MediaType(
-     *             mediaType="multipart/form-data",
-     *             @OA\Schema(
-     *                 required={"room_id","check_in","check_out","first_name"},
-     *                 @OA\Property(property="room_id", type="string", example="1"),
-     *                 @OA\Property(property="check_in", type="string", format="date-time", example="2025-11-07 12:00:00"),
-     *                 @OA\Property(property="check_out", type="string", format="date-time", example="2025-11-08 12:00:00"),
-     *                 @OA\Property(property="arrival_from", type="string", example="Chennai"),
-     *                 @OA\Property(property="booking_type", type="string", example="walk-in"),
-     *                 @OA\Property(property="booking_reference_no", type="string", example="BK12345"),
-     *                 @OA\Property(property="purpose_of_visit", type="string", example="Business"),
-     *                 @OA\Property(property="remarks", type="string", example="Early check-in requested"),
-     *
-     *                 @OA\Property(property="adults", type="integer", example=2),
-     *                 @OA\Property(property="children", type="integer", example=1),
-     *
-     *                 @OA\Property(property="country_code", type="string", example="+91"),
-     *                 @OA\Property(property="mobile_no", type="string", example="9876543210"),
-     *                 @OA\Property(property="title", type="string", example="Mr"),
-     *                 @OA\Property(property="first_name", type="string", example="John"),
-     *                 @OA\Property(property="last_name", type="string", example="Doe"),
-     *                 @OA\Property(property="father_name", type="string", example="Robert Doe"),
-     *                 @OA\Property(property="gender", type="string", example="male"),
-     *                 @OA\Property(property="occupation", type="string", example="Software Engineer"),
-     *                 @OA\Property(property="dob", type="string", format="date", example="1995-06-12"),
-     *                 @OA\Property(property="anniversary", type="string", format="date", example="2020-02-14"),
-     *                 @OA\Property(property="nationality", type="string", example="Indian"),
-     *                 @OA\Property(property="is_vip", type="boolean", example=false),
-     *
-     *                 @OA\Property(property="contact_type", type="string", example="personal"),
-     *                 @OA\Property(property="email", type="string", example="john.doe@example.com"),
-     *                 @OA\Property(property="country", type="string", example="India"),
-     *                 @OA\Property(property="state", type="string", example="Tamil Nadu"),
-     *                 @OA\Property(property="city", type="string", example="Chennai"),
-     *                 @OA\Property(property="zipcode", type="string", example="600001"),
-     *                 @OA\Property(property="address", type="string", example="123 Mount Road, Chennai"),
-     *
-     *                 @OA\Property(property="identity_type", type="string", example="aadhaar"),
-     *                 @OA\Property(property="identity_no", type="string", example="1234-5678-9123"),
-     *                 @OA\Property(property="identity_comments", type="string", example="ID verified at front desk"),
-     *                 @OA\Property(property="front_doc", type="string", format="binary"),
-     *                 @OA\Property(property="back_doc", type="string", format="binary"),
-     *                 @OA\Property(property="guest_image", type="string", format="binary"),
-     *
-     *                 @OA\Property(property="discount_reason", type="string", example="Corporate discount"),
-     *                 @OA\Property(property="discount_percent", type="number", format="float", example="10"),
-     *                 @OA\Property(property="commission_percent", type="number", format="float", example="5"),
-     *                 @OA\Property(property="commission_amount", type="number", format="float", example="500"),
-     *
-     *                 @OA\Property(property="payment_mode", type="string", example="card"),
-     *                 @OA\Property(property="advance_amount", type="number", format="float", example="2000"),
-     *                 @OA\Property(property="advance_remarks", type="string", example="Paid via credit card"),
-     *
-     *                 @OA\Property(property="booking_charge", type="number", format="float", example="4000"),
-     *                 @OA\Property(property="tax", type="number", format="float", example="480"),
-     *                 @OA\Property(property="service_charge", type="number", format="float", example="200"),
-     *                 @OA\Property(property="total", type="number", format="float", example="4680"),
-     *
-     *                 @OA\Property(property="status", type="string", example="reserved")
-     *             )
+     *         @OA\JsonContent(
+     *             required={"property_code","room_id","first_name","check_in","check_out"},
+     *             @OA\Property(property="property_code", type="string"),
+     *             @OA\Property(property="room_id", type="integer"),
+     *             @OA\Property(property="first_name", type="string"),
+     *             @OA\Property(property="last_name", type="string"),
+     *             @OA\Property(property="mobile_no", type="string"),
+     *             @OA\Property(property="check_in", type="string", format="date-time"),
+     *             @OA\Property(property="check_out", type="string", format="date-time"),
      *         )
      *     ),
-     *     @OA\Response(
-     *         response=201,
-     *         description="Reservation created successfully"
-     *     ),
-     *     @OA\Response(
-     *         response=400,
-     *         description="Invalid input data"
-     *     )
+     *     @OA\Response(response=201, description="Reservation created successfully")
      * )
      */
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'property_code' => 'required|string',
             'room_id' => 'required|exists:rooms,id',
+            'first_name' => 'required|string|max:100',
+            'last_name' => 'nullable|string|max:100',
+            'mobile_no' => 'nullable|string|max:15',
+            'email' => 'nullable|email|max:150',
             'check_in' => 'required|date',
             'check_out' => 'required|date|after:check_in',
-            'first_name' => 'required|string|max:255',
-            'booking_type' => 'required|string',
-            'guest_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'front_doc' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
-            'back_doc' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
-            'property_code' => 'required|string'
+            'booking_type' => ['nullable', Rule::in(['Walk-in', 'Online', 'Corporate'])],
         ]);
 
-        return $this->reservationService->createReservation($request->all());
+        return $this->reservationService->createReservation($validated);
     }
 
     /**
      * @OA\Post(
-     *     path="/api/pms/reservations/{id}",
-     *     tags={"Reservation"},
-     *     summary="Update an existing reservation (all fields)",
+     *     path="/api/pms/reservations/{id}/update",
+     *     tags={"Reservations"},
+     *     summary="Update reservation or perform check-in/check-out",
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         required=true,
-     *         description="Reservation UUID",
-     *         @OA\Schema(type="string")
+     *         @OA\Schema(type="integer")
      *     ),
      *     @OA\RequestBody(
-     *         required=false,
-     *         @OA\MediaType(
-     *             mediaType="multipart/form-data",
-     *             @OA\Schema(
-     *                 type="object",   
-     *                 @OA\Property(property="property_code", type="string", example="H001"),
-     *                 @OA\Property(property="room_id", type="string", example="1"),
-     *                 @OA\Property(property="check_in", type="string", format="date-time", example="2025-11-07 12:00:00"),
-     *                 @OA\Property(property="check_out", type="string", format="date-time", example="2025-11-08 12:00:00"),
-     *                 @OA\Property(property="arrival_from", type="string", example="Chennai"),
-     *                 @OA\Property(property="booking_type", type="string", example="online"),
-     *                 @OA\Property(property="booking_reference_no", type="string", example="BK56789"),
-     *                 @OA\Property(property="purpose_of_visit", type="string", example="Vacation"),
-     *                 @OA\Property(property="remarks", type="string", example="Late checkout requested"),
-     *                 @OA\Property(property="adults", type="integer", example=2),
-     *                 @OA\Property(property="children", type="integer", example=1),
-     *                 @OA\Property(property="country_code", type="string", example="+91"),
-     *                 @OA\Property(property="mobile_no", type="string", example="9876543210"),
-     *                 @OA\Property(property="title", type="string", example="Mr"),
-     *                 @OA\Property(property="first_name", type="string", example="John"),
-     *                 @OA\Property(property="last_name", type="string", example="Doe"),
-     *                 @OA\Property(property="father_name", type="string", example="Robert Doe"),
-     *                 @OA\Property(property="gender", type="string", example="male"),
-     *                 @OA\Property(property="occupation", type="string", example="Software Engineer"),
-     *                 @OA\Property(property="dob", type="string", format="date", example="1995-06-12"),
-     *                 @OA\Property(property="anniversary", type="string", format="date", example="2020-02-14"),
-     *                 @OA\Property(property="nationality", type="string", example="Indian"),
-     *                 @OA\Property(property="is_vip", type="int", example=0),
-     *                 @OA\Property(property="contact_type", type="string", example="personal"),
-     *                 @OA\Property(property="email", type="string", example="john.doe@example.com"),
-     *                 @OA\Property(property="country", type="string", example="India"),
-     *                 @OA\Property(property="state", type="string", example="Tamil Nadu"),
-     *                 @OA\Property(property="city", type="string", example="Chennai"),
-     *                 @OA\Property(property="zipcode", type="string", example="600001"),
-     *                 @OA\Property(property="address", type="string", example="123 Mount Road, Chennai"),
-     *                 @OA\Property(property="identity_type", type="string", example="aadhaar"),
-     *                 @OA\Property(property="identity_no", type="string", example="1234-5678-9123"),
-     *                 @OA\Property(property="identity_comments", type="string", example="ID verified at front desk"),
-     *                 @OA\Property(property="front_doc", type="string", format="binary"),
-     *                 @OA\Property(property="back_doc", type="string", format="binary"),
-     *                 @OA\Property(property="guest_image", type="string", format="binary"),
-     *                 @OA\Property(property="discount_reason", type="string", example="Corporate discount"),
-     *                 @OA\Property(property="discount_percent", type="number", format="float", example="10"),
-     *                 @OA\Property(property="commission_percent", type="number", format="float", example="5"),
-     *                 @OA\Property(property="commission_amount", type="number", format="float", example="500"),
-     *                 @OA\Property(property="payment_mode", type="string", example="upi"),
-     *                 @OA\Property(property="advance_amount", type="number", format="float", example="1500"),
-     *                 @OA\Property(property="advance_remarks", type="string", example="UPI payment received"),
-     *                 @OA\Property(property="booking_charge", type="number", format="float", example="4000"),
-     *                 @OA\Property(property="tax", type="number", format="float", example="480"),
-     *                 @OA\Property(property="service_charge", type="number", format="float", example="200"),
-     *                 @OA\Property(property="total", type="number", format="float", example="4680"),
-     *             )
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="property_code", type="string"),
+     *             @OA\Property(property="status", type="string", enum={"reserved","checked_in","checked_out","cancelled"}),
+     *             @OA\Property(property="booking_charge", type="number"),
+     *             @OA\Property(property="discount_percent", type="number"),
+     *             @OA\Property(property="commission_percent", type="number"),
+     *             @OA\Property(property="commission_amount", type="number"),
+     *             @OA\Property(property="service_charge", type="number"),
+     *             @OA\Property(property="advance_amount", type="number"),
+     *             @OA\Property(property="paid_amount", type="number")
      *         )
      *     ),
      *     @OA\Response(response=200, description="Reservation updated successfully"),
-     *     @OA\Response(response=404, description="Reservation not found")
+     *     @OA\Response(response=422, description="Validation error or insufficient payment")
      * )
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, int $id)
     {
-        return $this->reservationService->updateReservation($id, $request->all());
-    }
+        $validated = $request->validate([
+            'property_code' => 'required|string',
+            'booking_charge' => 'nullable|numeric|min:0',
+            'discount_percent' => 'nullable|numeric|min:0|max:100',
+            'commission_percent' => 'nullable|numeric|min:0|max:100',
+            'commission_amount' => 'nullable|numeric|min:0',
+            'service_charge' => 'nullable|numeric|min:0',
+            'advance_amount' => 'nullable|numeric|min:0',
+            'paid_amount' => 'nullable|numeric|min:0',
+            'identity_type' => 'nullable|string|max:50',
+            'identity_no' => 'nullable|string|max:50',
+            'front_doc' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'back_doc' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'guest_image' => 'nullable|file|mimes:jpg,jpeg,png|max:2048'
+        ]);
 
-    /**
-     * @OA\Put(
-     *     path="/api/pms/reservations/{id}/check-in",
-     *     tags={"Reservation"},
-     *     summary="Mark reservation as checked-in",
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         description="Reservation UUID",
-     *         @OA\Schema(type="string")
-     *     ),
-     *     @OA\Response(response=200, description="Reservation checked in successfully"),
-     *     @OA\Response(response=404, description="Reservation not found")
-     * )
-     */
-    public function checkIn($id, Request $request)
-    {
-        $propertyCode = $request->get('property_code');
-        return $this->reservationService->updateReservation($id, ['property_code' => $propertyCode, 'status' => 'checked-in']);
-    }
-
-    /**
-     * @OA\Put(
-     *     path="/api/pms/reservations/{id}/check-out",
-     *     tags={"Reservation"},
-     *     summary="Mark reservation as checked-out (room set to dirty)",
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         description="Reservation UUID",
-     *         @OA\Schema(type="string")
-     *     ),
-     *     @OA\Response(response=200, description="Reservation checked out successfully"),
-     *     @OA\Response(response=404, description="Reservation not found")
-     * )
-     */
-    public function checkOut($id, Request $request)
-    {
-        $propertyCode = $request->get('property_code');
-        return $this->reservationService->updateReservation($id, ['property_code' => $propertyCode, 'status' => 'checked-out']);
-    }
-
-    /**
-     * @OA\Put(
-     *     path="/api/pms/reservations/{id}/cancel",
-     *     tags={"Reservation"},
-     *     summary="Cancel a reservation",
-     *     @OA\Parameter(
-     *         name="id",
-     *         in="path",
-     *         required=true,
-     *         description="Reservation UUID",
-     *         @OA\Schema(type="string")
-     *     ),
-     *     @OA\Response(response=200, description="Reservation cancelled successfully"),
-     *     @OA\Response(response=404, description="Reservation not found")
-     * )
-     */
-    public function cancel($id)
-    {
-        return $this->reservationService->updateReservation($id, ['status' => 'cancelled']);
+        return $this->reservationService->updateReservation($id, $validated);
     }
 
     /**
      * @OA\Delete(
      *     path="/api/pms/reservations/{id}",
-     *     tags={"Reservation"},
+     *     tags={"Reservations"},
      *     summary="Delete a reservation",
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         required=true,
-     *         description="Reservation UUID",
-     *         @OA\Schema(type="string")
+     *         @OA\Schema(type="integer")
      *     ),
      *     @OA\Response(response=200, description="Reservation deleted successfully"),
      *     @OA\Response(response=404, description="Reservation not found")
      * )
      */
-    public function destroy($id, Request $request)
+    public function destroy(Request $request, int $id)
     {
-        $propertyCode = $request->get('property_code');
-        return $this->reservationService->deleteReservation($id, $propertyCode);
+        $request->validate([
+            'property_code' => 'required|string'
+        ]);
+
+        return $this->reservationService->deleteReservation($id, $request->property_code);
+    }
+
+
+    /**
+     * @OA\Post(
+     *     path="/api/pms/reservations/{id}/checkin",
+     *     tags={"Reservations"},
+     *     summary="Check-in guest for reservation",
+     *     description="Validates guest details and room availability before check-in.",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 required={"property_code"},
+     *                 @OA\Property(property="property_code", type="string"),
+     *                 @OA\Property(property="identity_type", type="string"),
+     *                 @OA\Property(property="identity_no", type="string"),
+     *                 @OA\Property(property="front_doc", type="string", format="binary"),
+     *                 @OA\Property(property="back_doc", type="string", format="binary"),
+     *                 @OA\Property(property="guest_image", type="string", format="binary")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="Guest checked in successfully"),
+     *     @OA\Response(response=422, description="Missing guest details"),
+     *     @OA\Response(response=409, description="Room not available")
+     * )
+     */
+    public function checkIn(Request $request, int $id)
+    {
+        // Merge status for service logic
+        $validated['status'] = 'checked_in';
+
+        return $this->reservationService->updateReservation($id, $validated);
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/pms/reservations/{id}/checkout",
+     *     tags={"Reservations"},
+     *     summary="Check-out guest and close reservation",
+     *     description="Ensures full payment is completed before checkout.",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(response=200, description="Guest checked out successfully"),
+     *     @OA\Response(response=422, description="Total amount not paid")
+     * )
+     */
+    public function checkOut(Request $request, int $id)
+    {
+        $validated = $request->validate([
+            'property_code' => 'required|string',
+            'paid_amount' => 'required|numeric|min:0'
+        ]);
+
+        // Merge status for service logic
+        $validated['status'] = 'checked_out';
+
+        return $this->reservationService->updateReservation($id, $validated);
     }
 }

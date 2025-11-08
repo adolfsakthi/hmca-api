@@ -22,7 +22,7 @@ return new class extends Migration {
             $table->text('room_description')->nullable();
             $table->text('reserve_condition')->nullable();
             $table->boolean('is_active')->default(true);
-            $table->enum('status', ['available', 'reserved', 'dirty', 'maintenance', 'cleaning', 'under_maintenance'])->default('available');
+            $table->enum('status', ['vacant', 'reserved', 'occupied', 'dirty', 'cleaning', 'maintenance'])->default('vacant');
             $table->timestamps();
             $table->foreign('property_code')->references('property_code')->on('properties')->onDelete('cascade');
             $table->foreign('room_type_id')

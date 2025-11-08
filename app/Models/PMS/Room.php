@@ -34,7 +34,7 @@ class Room extends Model
     ];
 
     protected $attributes = [
-        'status' => 'available',
+        'status' => 'vacant',
     ];
 
     public function property()

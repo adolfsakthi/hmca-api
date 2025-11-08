@@ -54,4 +54,15 @@ class RoomRepository implements RoomRepositoryInterface
             ->where('property_code', $propertyCode)
             ->first();
     }
+
+    public function updateStatus(int $roomId, string $status)
+    {
+        $room = Room::find($roomId);
+        if (!$room) {
+            return null;
+        }
+
+        $room->update(['status' => $status]);
+        return $room;
+    }
 }

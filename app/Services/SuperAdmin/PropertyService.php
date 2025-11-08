@@ -6,14 +6,16 @@ use App\Models\User;
 use App\Repositories\SuperAdmin\Interfaces\PropertyRepositoryInterface;
 use App\Repositories\PMS\UserRepository;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Exists;
 
 class PropertyService
 {
     protected $propertyRepository;
     protected $userRepository;
 
-    public function __construct(PropertyRepositoryInterface $propertyRepository,UserRepository $userRepository)
+    public function __construct(PropertyRepositoryInterface $propertyRepository, UserRepository $userRepository)
     {
         $this->propertyRepository = $propertyRepository;
         $this->userRepository = $userRepository;
@@ -50,52 +52,59 @@ class PropertyService
 
     public function createProperty(array $data)
     {
-        if ($this->propertyRepository->findByCode($data['property_code'])) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Property code already exists.'
-            ], 409);
-        }
-
-        if ($this->propertyRepository->findByEmail($data['email'])) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Email already exists.'
-            ], 409);
-        }
 
         try {
-            $property = $this->propertyRepository->create([
-                'property_name' => $data['property_name'],
-                'property_code' => $data['property_code'],
-                'email' => $data['email'],
-                'phone' => $data['phone'] ?? null,
-                'address' => $data['address'],
-                'city' => $data['city'] ?? null,
-                'state' => $data['state'] ?? null,
-                'zip_code' => $data['zip_code'] ?? null,
-                'country' => $data['country'] ?? null,
-                'description' => $data['description'] ?? null,
-            ]);
+            return DB::transaction(function () use ($data) {
 
-            // Create a default property admin user
-            $this->userRepository->create([
-                'name' => $data['email'],
-                'email' => $data['email'],
-                'password' => Hash::make('Admin@123'),
-                'role' => 'property_admin',
-                'property_id' => $property->id,
-            ]);
+                if ($this->propertyRepository->findByCode($data['property_code'])) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Property code already exists.'
+                    ], 409);
+                }
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Property created successfully.',
-                'data' => $property
-            ], 201);
+                $property = $this->propertyRepository->create([
+                    'property_name' => $data['property_name'],
+                    'property_code' => $data['property_code'],
+                    'email' => $data['email'],
+                    'phone' => $data['phone'] ?? null,
+                    'address' => $data['address'] ?? null,
+                    'city' => $data['city'] ?? null,
+                    'state' => $data['state'] ?? null,
+                    'zip_code' => $data['zip_code'] ?? null,
+                    'country' => $data['country'] ?? null,
+                    'description' => $data['description'] ?? null,
+                ]);
+
+                $existingUser = $this->userRepository->findByEmail($data['email']);
+
+                if (!$existingUser) {
+                    $this->userRepository->create([
+                        'name' => $property->property_name ?? 'Property Admin',
+                        'email' => $data['email'],
+                        'password' => Hash::make('Admin@123'),
+                        'role' => 'property_admin',
+                        'property_id' => $property->id,
+                    ]);
+                }
+
+                // ✅ 5️⃣ Return success response
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Property created successfully.',
+                    'data' => $property
+                ], 201);
+            });
         } catch (QueryException $ex) {
             return response()->json([
                 'success' => false,
                 'message' => 'Database error or duplicate entry.',
+                'error' => $ex->getMessage()
+            ], 500);
+        } catch (\Exception $ex) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unexpected error occurred while creating property.',
                 'error' => $ex->getMessage()
             ], 500);
         }

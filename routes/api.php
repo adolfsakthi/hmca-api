@@ -1,17 +1,22 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SuperAdmin\PropertyController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PMS\AmenityController;
+use App\Http\Controllers\PMS\HousekeepingController;
+use App\Http\Controllers\PMS\POSController;
+use App\Http\Controllers\PMS\POSItemController;
+use App\Http\Controllers\PMS\RateTypeController;
 use App\Http\Controllers\PMS\ReservationController;
 use App\Http\Controllers\PMS\RoomController;
 use App\Http\Controllers\PMS\RoomTypeController;
+use App\Http\Controllers\PMS\TaxController;
 use App\Http\Controllers\PMS\UserController;
 use App\Http\Controllers\SuperAdmin\ModuleController;
 use App\Http\Controllers\SuperAdmin\PropertyModuleController;
-use App\Models\PMS\RoomType;
+
+
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -31,9 +36,19 @@ Route::middleware(['jwt.custom'])->group(function () {
 
 Route::prefix('pms')->middleware(['jwt.custom', 'role:property_admin', 'property.inject', 'module.access:pms'])->group(function () {
     Route::post('reservations/{id}', [ReservationController::class, 'update']);
+    Route::apiResource('rate-types', RateTypeController::class);
     Route::apiResource('users', UserController::class);
     Route::apiResource('rooms', RoomController::class);
     Route::apiResource('amenities', AmenityController::class);
     Route::apiResource('room-type', RoomTypeController::class);
+    Route::apiResource('reservations', ReservationController::class);
+    Route::apiResource('pos', POSController::class);
+    Route::apiResource('housekeeping', HousekeepingController::class);
+    Route::apiResource('tax', TaxController::class);
+    Route::apiResource('pos/items', POSItemController::class);
+});
+
+
+Route::prefix('pms')->middleware(['jwt.custom', 'role:front_desk', 'property.inject', 'module.access:pms'])->group(function () {
     Route::apiResource('reservations', ReservationController::class);
 });
