@@ -37,7 +37,7 @@ class EmployeeController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $propertyCode = $request->attributes->get('property_code');
+        $propertyCode = $request->get('property_code');
         $search = $request->get('q');
         $perPage = (int) $request->get('per_page', 15);
 
