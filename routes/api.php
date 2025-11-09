@@ -75,19 +75,14 @@ Route::prefix('hrms')->middleware(['jwt.custom', 'role:hr,admin', 'property.inje
 
     Route::post('employees', [EmployeeController::class, 'store']);
     Route::post('employees/upload', [EmployeeController::class, 'upload']);
-
-        Route::get('employees/{id}', [EmployeeController::class, 'show']);
-        Route::put('employees/{id}', [EmployeeController::class, 'update']);
-        Route::delete('employees/{id}', [EmployeeController::class, 'destroy']);
-
-        //shift management routes
-        Route::get('shifts', [ShiftController::class, 'index']);
-        Route::get('shifts/{id}', [ShiftController::class, 'show']);
-        Route::post('shifts', [ShiftController::class, 'store']);
-        Route::put('shifts/{id}', [ShiftController::class, 'update']);
-        Route::delete('shifts/{id}', [ShiftController::class, 'destroy']);
-    });
-    Route::get('employees/{id}', [EmployeeController::class, 'show']);
     Route::put('employees/{id}', [EmployeeController::class, 'update']);
     Route::delete('employees/{id}', [EmployeeController::class, 'destroy']);
+    Route::get('employees/{id}', [EmployeeController::class, 'show']);
+
+    //shift management routes
+    Route::get('shifts', [ShiftController::class, 'index']);
+    Route::get('shifts/{id}', [ShiftController::class, 'show']);
+    Route::post('shifts', [ShiftController::class, 'store']);
+    Route::put('shifts/{id}', [ShiftController::class, 'update']);
+    Route::delete('shifts/{id}', [ShiftController::class, 'destroy']);
 });
