@@ -83,6 +83,282 @@
                 ]
             }
         },
+        "/api/hrms/rosters": {
+            "get": {
+                "tags": [
+                    "HRMS Duty Roster"
+                ],
+                "summary": "Get weekly duty roster grouped by date and shift",
+                "description": "Provide week_start (YYYY-MM-DD) to get roster for that week (7 days).",
+                "operationId": "3aacd423ccfeb09ecb9a93cc20c591d7",
+                "parameters": [
+                    {
+                        "name": "week_start",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "description": "Grouped roster by date->shift->employees",
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "HRMS Duty Roster"
+                ],
+                "summary": "Create or upsert a duty roster entry for an employee on a date",
+                "operationId": "3c2eefb486bf423762561532201489d7",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "roster_date"
+                                ],
+                                "properties": {
+                                    "employee_code": {
+                                        "description": "Employee code (preferred)",
+                                        "type": "string"
+                                    },
+                                    "employee_id": {
+                                        "description": "Employee id (optional if employee_code provided)",
+                                        "type": "integer"
+                                    },
+                                    "roster_date": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "shift_id": {
+                                        "description": "Shift id to assign",
+                                        "type": "integer"
+                                    },
+                                    "start_time": {
+                                        "type": "string",
+                                        "example": "09:00"
+                                    },
+                                    "end_time": {
+                                        "type": "string",
+                                        "example": "17:00"
+                                    },
+                                    "note": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/hrms/rosters/{id}": {
+            "get": {
+                "tags": [
+                    "HRMS Duty Roster"
+                ],
+                "summary": "Get a single roster entry",
+                "operationId": "0a209966a21b96527c25aa5a9b532a81",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "HRMS Duty Roster"
+                ],
+                "summary": "Update a roster entry",
+                "operationId": "db92bd58cf70988f34c88dc9a82234ae",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "shift_id": {
+                                        "type": "integer"
+                                    },
+                                    "start_time": {
+                                        "type": "string",
+                                        "example": "09:00"
+                                    },
+                                    "end_time": {
+                                        "type": "string",
+                                        "example": "17:00"
+                                    },
+                                    "note": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Updated"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "HRMS Duty Roster"
+                ],
+                "summary": "Delete a roster entry",
+                "operationId": "5c0b9142b78adab54d3e9dea3d633b50",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Deleted"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            }
+        },
+        "/api/hrms/rosters/upload": {
+            "post": {
+                "tags": [
+                    "HRMS Duty Roster"
+                ],
+                "summary": "Upload roster file (Excel/CSV) and process",
+                "operationId": "afdc5df35c913cc4ad16d1f97dce6769",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "file"
+                                ],
+                                "properties": {
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Processed"
+                    }
+                }
+            }
+        },
+        "/api/hrms/rosters/sample": {
+            "get": {
+                "tags": [
+                    "HRMS Duty Roster"
+                ],
+                "summary": "Get sample roster format instructions",
+                "operationId": "692eedf4d750fd05943d9f9d62f1226d",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "columns": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/hrms/employees": {
             "get": {
                 "tags": [
@@ -3821,6 +4097,10 @@
     "tags": [
         {
             "name": "Authentication"
+        },
+        {
+            "name": "HRMS Duty Roster",
+            "description": "Duty roster management endpoints (weekly view, CRUD, bulk upload)"
         },
         {
             "name": "HRMS Employees",
