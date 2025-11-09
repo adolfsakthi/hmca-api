@@ -62,7 +62,7 @@ Route::prefix('pms')->middleware(['jwt.custom', 'role:front_desk', 'property.inj
 });
 
 //HRMS Routes
-Route::prefix('hrms')->middleware(['jwt.custom', 'role:hr,admin', 'property.inject', 'module.access:hrms',])->group(function () {
+Route::prefix('hrms')->middleware(['jwt.custom', 'role:hr,property_admin', 'property.inject', 'module.access:hrms',])->group(function () {
 
         Route::get('employees', [EmployeeController::class, 'index']);
         Route::get('employees/sample/download', [EmployeeController::class, 'downloadSample']);

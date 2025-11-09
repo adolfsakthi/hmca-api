@@ -45,16 +45,30 @@ return [
 
         'mysql' => [
             'driver' => 'mysql',
+            'host' => '193.203.184.93',
+            'port' => '3306',
+            'database' => 'u507662125_hmca_api_dev',
+            'username' => 'u507662125_hmca_api_dev',
+            'password' => 'HMCAdev^2025',
+            'unix_socket' => '',
+            'charset' => 'utf8',
+            'collation' => 'utf8_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
+
+        '4ssql' => [
+            'driver' => 'mysql',
             'host' => '127.0.0.1',
             'port' => '3307',
             'database' => 'hmca_api_db',
             'username' => 'root',
-            'password' => 'Sai@1896',            
-            // 'host' => '193.203.184.93',
-            // 'port' => '3306',
-            // 'database' => 'u507662125_hmca_api_dev',
-            // 'username' => 'u507662125_hmca_api_dev',
-            // 'password' => 'HMCAdev^2025',
+            'password' => 'Sai@1896',
             'unix_socket' => '',
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
@@ -152,7 +166,7 @@ return [
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
-            'prefix' => env('REDIS_PREFIX', Str::slug((string) env('APP_NAME', 'laravel')).'-database-'),
+            'prefix' => env('REDIS_PREFIX', Str::slug((string) env('APP_NAME', 'laravel')) . '-database-'),
             'persistent' => env('REDIS_PERSISTENT', false),
         ],
 

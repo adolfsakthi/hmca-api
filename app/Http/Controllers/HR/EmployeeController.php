@@ -58,7 +58,7 @@ class EmployeeController extends Controller
      */
     public function show(Request $request, int $id): JsonResponse
     {
-        $propertyCode = $request->attributes->get('property_code');
+        $propertyCode = $request->get('property_code');
         $emp = $this->employeeService->get($propertyCode, $id);
 
         if (!$emp) {
@@ -95,7 +95,7 @@ class EmployeeController extends Controller
      */
     public function store(StoreEmployeeRequest $request): JsonResponse
     {
-        $propertyCode = $request->attributes->get('property_code');
+        $propertyCode = $request->get('property_code');
 
         try {
             $employee = $this->employeeService->create(
@@ -129,7 +129,7 @@ class EmployeeController extends Controller
      */
     public function update(UpdateEmployeeRequest $request, int $id): JsonResponse
     {
-        $propertyCode = $request->attributes->get('property_code');
+        $propertyCode = $request->get('property_code');
 
         try {
             $emp = $this->employeeService->update(
@@ -163,7 +163,7 @@ class EmployeeController extends Controller
      */
     public function destroy(Request $request, int $id): JsonResponse
     {
-        $propertyCode = $request->attributes->get('property_code');
+        $propertyCode = $request->get('property_code');
 
         $ok = $this->employeeService->delete($propertyCode, $id);
 
@@ -204,7 +204,7 @@ class EmployeeController extends Controller
             'file' => 'required|file|mimes:xlsx,xls,csv|max:51200',
         ]);
 
-        $propertyCode = $request->attributes->get('property_code');
+        $propertyCode = $request->get('property_code');
 
         $result = $this->employeeService->handleBulkUpload(
             $propertyCode,

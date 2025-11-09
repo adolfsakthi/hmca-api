@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Models\PMS\POSItem;
+use App\Repositories\HR\EmployeeRepository;
+use App\Repositories\HR\Interfaces\EmployeeRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
 use App\Repositories\SuperAdmin\Interfaces\PropertyRepositoryInterface;
 use App\Repositories\PMS\Interfaces\RoomRepositoryInterface;
