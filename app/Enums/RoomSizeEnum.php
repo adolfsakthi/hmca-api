@@ -6,7 +6,7 @@ enum RoomSizeEnum: string
 {
     case SINGLE = 'single';
     case DOUBLE = 'double';
-    case TRIPAL = 'tripal';
+    case TRIPLE = 'triple';
     case KING = 'king';
     case QUEEN = 'queen';
     case QUAD = 'quad';

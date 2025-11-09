@@ -33,7 +33,7 @@ class RoomSeeder extends Seeder
                 'room_description' => 'Deluxe King room with city view',
                 'reserve_condition' => 'Non-refundable.',
                 'is_active' => true,
-                'status' => RoomStatusEnum::AVAILABLE->value,
+                'status' => RoomStatusEnum::VACANT->value,
             ],
             [
                 'property_code' => 'H001',
@@ -49,7 +49,7 @@ class RoomSeeder extends Seeder
                 'room_description' => 'Executive Suite with workspace',
                 'reserve_condition' => 'Free cancellation before 24 hours.',
                 'is_active' => true,
-                'status' => RoomStatusEnum::AVAILABLE->value,
+                'status' => RoomStatusEnum::VACANT->value,
             ],
             [
                 'property_code' => 'H002',
@@ -65,7 +65,7 @@ class RoomSeeder extends Seeder
                 'room_description' => 'Ocean view villa with private pool',
                 'reserve_condition' => 'Breakfast included.',
                 'is_active' => true,
-                'status' => RoomStatusEnum::AVAILABLE->value,
+                'status' => RoomStatusEnum::VACANT->value,
             ],
         ];
 

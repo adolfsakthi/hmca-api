@@ -124,9 +124,10 @@ class PropertyController extends Controller
      *     @OA\Response(response=404, description="Property not found")
      * )
      */
-    public function show(int $id)
+    public function show(Request $request,int $id)
     {
-        return $this->propertyService->getPropertyById($id);
+        $user = $request->auth_user; 
+        return $this->propertyService->getPropertyByIdForRole($id, $user);
     }
 
     /**
@@ -160,6 +161,7 @@ class PropertyController extends Controller
      */
     public function update(Request $request, int $id)
     {
+        $user = $request->auth_user;
         $validated = $request->validate([
             'phone' => 'nullable|string',
             'address' => 'required|string',
@@ -170,7 +172,7 @@ class PropertyController extends Controller
             'description' => 'nullable|string',
         ]);
 
-        return $this->propertyService->updateProperty($id, $validated);
+        return $this->propertyService->updatePropertyForRole($id, $validated, $user);
     }
 
     /**

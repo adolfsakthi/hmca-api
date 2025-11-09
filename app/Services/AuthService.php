@@ -98,6 +98,7 @@ class AuthService
         // Custom JWT claims
         $customClaims = [
             'id' => $user->id,
+            'name'=> $user->name,
             'email' => $user->email,
             'role' => $user->role,
             'property_id' => $user->property_id,

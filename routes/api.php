@@ -23,13 +23,20 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware(['jwt.custom'])->group(function () {
     Route::post('/refresh-token', [AuthController::class, 'refreshToken']);
     Route::middleware('role:super_admin')->group(function () {
-        Route::apiResource('property', PropertyController::class);
+        // Route::apiResource('property', PropertyController::class);
+        Route::get('property', [PropertyController::class, 'index']);
+        Route::post('property', [PropertyController::class, 'store']);
+        Route::delete('property/{id}', [PropertyController::class, 'destroy']);
         Route::put('property/temporaryDisable/{id}', [PropertyController::class, 'temporaryDisable']);
         Route::apiResource('modules', ModuleController::class);
         Route::get('properties/{id}/modules', [PropertyModuleController::class, 'index']);
         Route::post('properties/{id}/modules', [PropertyModuleController::class, 'assign']);
         Route::delete('properties/{id}/modules', [PropertyModuleController::class, 'remove']);
         Route::patch('properties/{id}/modules/toggle', [PropertyModuleController::class, 'toggle']);
+    });
+    Route::middleware('role:property_admin,super_admin')->group(function () {
+        Route::get('property/{id}', [PropertyController::class, 'show']);
+        Route::put('property/{id}', [PropertyController::class, 'update']);
     });
 });
 

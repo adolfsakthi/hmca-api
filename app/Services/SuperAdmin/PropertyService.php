@@ -179,4 +179,57 @@ class PropertyService
             'data' => $updatedProperty
         ], 200);
     }
+
+    public function getPropertyByIdForRole(int $id, $user)
+    {
+        $property = $this->propertyRepository->findById($id);
+
+        if (!$property) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Property not found.'
+            ], 404);
+        }
+
+        // 🧠 Property Admin can only view their own property
+        if ($user->role === 'property_admin' && $user->property_id !== $property->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You are not authorized to view this property.'
+            ], 403);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Property fetched successfully.',
+            'data' => $property
+        ], 200);
+    }
+
+    public function updatePropertyForRole(int $id, array $data, $user)
+    {
+        $property = $this->propertyRepository->findById($id);
+
+        if (!$property) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Property not found.'
+            ], 404);
+        }
+
+        if ($user->role === 'property_admin' && $user->property_id !== $property->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You are not authorized to update this property.'
+            ], 403);
+        }
+
+        $updatedProperty = $this->propertyRepository->update($property, $data);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Property updated successfully.',
+            'data' => $updatedProperty
+        ], 200);
+    }
 }
