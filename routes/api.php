@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SuperAdmin\PropertyController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\HR\DutyRosterController;
 use App\Http\Controllers\PMS\AmenityController;
 use App\Http\Controllers\PMS\HousekeepingController;
 use App\Http\Controllers\PMS\POSController;
