@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\HR;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\HR\StoreDutyRosterRequest;
+use App\Http\Requests\HR\UpdateDutyRosterRequest;
+use App\Http\Requests\HR\UploadRosterRequest;
 use App\Services\HR\DutyRosterService;
 use Illuminate\Http\Request;
 
 /**
- * @OA\Tag(name="HRMS Duty Roster", description="Duty roster management")
+ * Duty Roster Controller
  */
 class DutyRosterController extends Controller
 {
@@ -18,23 +21,13 @@ class DutyRosterController extends Controller
         $this->service = $service;
     }
 
-    /**
-     * @OA\Get(
-     *   path="/api/hrms/rosters",
-     *   tags={"HRMS Duty Roster"},
-     *   summary="List roster rows for a week",
-     *   @OA\Parameter(name="week_start", in="query", description="YYYY-MM-DD (week start, Mon)", @OA\Schema(type="string")),
-     *   @OA\Response(response=200, description="OK")
-     * )
-     */
+    // Weekly view grouped for frontend
     public function index(Request $request)
     {
         $propertyCode = $request->get('property_code');
-        $weekStart = $request->get('week_start', date('Y-m-d')); // default to today; frontend should send Monday
-
+        $weekStart = $request->get('week_start', date('Y-m-d'));
         $rows = $this->service->listForWeek($propertyCode, $weekStart);
 
-        // Shape for frontend weekly view: group by date -> shift -> [employees]
         $grouped = [];
         foreach ($rows as $r) {
             $d = $r->roster_date->format('Y-m-d');
@@ -44,7 +37,7 @@ class DutyRosterController extends Controller
             $grouped[$d][$shiftCode]['employees'][] = [
                 'id' => $r->employee->id,
                 'employee_code' => $r->employee->employee_code,
-                'name' => $r->employee->first_name.' '.$r->employee->last_name,
+                'name' => trim($r->employee->first_name . ' ' . $r->employee->last_name),
                 'roster_id' => $r->id,
                 'start_time' => $r->start_time ?? ($r->shift->start_time ?? null),
                 'end_time' => $r->end_time ?? ($r->shift->end_time ?? null),
@@ -54,31 +47,59 @@ class DutyRosterController extends Controller
         return response()->json(['success' => true, 'data' => $grouped]);
     }
 
-    /**
-     * @OA\Post(
-     *  path="/api/hrms/rosters/upload",
-     *  tags={"HRMS Duty Roster"},
-     *  summary="Upload roster file (Excel/CSV) and process",
-     *  @OA\RequestBody(
-     *    required=true,
-     *    @OA\MediaType(mediaType="multipart/form-data",
-     *      @OA\Schema(required={"file"}, @OA\Property(property="file", type="string", format="binary"))
-     *    )
-     *  ),
-     *  @OA\Response(response=200, description="Processed")
-     * )
-     */
-    public function upload(Request $request)
+    public function show(Request $request, int $id)
     {
-        $request->validate(['file' => 'required|file|mimes:xlsx,xls,csv|max:51200']);
+        $propertyCode = $request->get('property_code');
+        $row = $this->service->get($propertyCode, $id);
+        if (!$row) return response()->json(['success' => false, 'message' => 'Not found'], 404);
+        return response()->json(['success' => true, 'data' => $row]);
+    }
 
+    public function store(StoreDutyRosterRequest $request)
+    {
+        $propertyCode = $request->get('property_code');
+        $payload = $request->validated();
+        $record = $this->service->store($propertyCode, $payload);
+        if (!$record) {
+            return response()->json(['success' => false, 'message' => 'Employee not found for property or other error'], 422);
+        }
+        return response()->json(['success' => true, 'data' => $record], 201);
+    }
+
+    public function update(UpdateDutyRosterRequest $request, int $id)
+    {
+        $propertyCode = $request->get('property_code');
+        $payload = $request->validated();
+        $row = $this->service->update($propertyCode, $id, $payload);
+        if (!$row) return response()->json(['success' => false, 'message' => 'Not found'], 404);
+        return response()->json(['success' => true, 'data' => $row], 200);
+    }
+
+    public function destroy(Request $request, int $id)
+    {
+        $propertyCode = $request->get('property_code');
+        $ok = $this->service->delete($propertyCode, $id);
+        if (!$ok) return response()->json(['success' => false, 'message' => 'Not found'], 404);
+        return response()->json(['success' => true, 'message' => 'Deleted'], 200);
+    }
+
+    public function upload(UploadRosterRequest $request)
+    {
         $propertyCode = $request->get('property_code');
         $userId = auth()->id();
-
         $result = $this->service->processBulkUpload($propertyCode, $request->file('file'), $userId);
-
         return response()->json(['success' => true, 'data' => $result]);
     }
 
-    // For single CRUD you can implement store/update/destroy calling service methods
+    // optional sample endpoint
+    public function sample()
+    {
+        return response()->json([
+            'columns' => [
+                'Emp. Code',
+                'YYYY-MM-DD', // date columns...
+            ],
+            'note' => "First column must be employee code. Other columns' headers must be dates in YYYY-MM-DD format. Cells contain shift codes (e.g., M, A, N)."
+        ]);
+    }
 }

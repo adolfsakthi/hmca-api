@@ -9,17 +9,19 @@ class DutyRosterRepository implements DutyRosterRepositoryInterface
 {
     public function listForWeek(string $propertyCode, string $weekStartDate)
     {
-        // weekStartDate is YYYY-MM-DD (Monday). Return all roster rows for 7 days
         $start = $weekStartDate;
         $end = date('Y-m-d', strtotime("$start +6 days"));
 
-        $rows = DutyRoster::with(['employee','shift'])
+        return DutyRoster::with(['employee','shift'])
             ->where('property_code', $propertyCode)
             ->whereBetween('roster_date', [$start, $end])
             ->orderBy('roster_date')
             ->get();
+    }
 
-        return $rows;
+    public function findByIdAndProperty(int $id, string $propertyCode)
+    {
+        return DutyRoster::where('property_code', $propertyCode)->find($id);
     }
 
     public function create(array $data)
@@ -29,7 +31,7 @@ class DutyRosterRepository implements DutyRosterRepositoryInterface
 
     public function update(int $id, string $propertyCode, array $data)
     {
-        $r = DutyRoster::where('property_code', $propertyCode)->find($id);
+        $r = $this->findByIdAndProperty($id, $propertyCode);
         if (!$r) return null;
         $r->update($data);
         return $r;
@@ -37,7 +39,7 @@ class DutyRosterRepository implements DutyRosterRepositoryInterface
 
     public function delete(int $id, string $propertyCode): bool
     {
-        $r = DutyRoster::where('property_code', $propertyCode)->find($id);
+        $r = $this->findByIdAndProperty($id, $propertyCode);
         if (!$r) return false;
         $r->delete();
         return true;
@@ -45,7 +47,6 @@ class DutyRosterRepository implements DutyRosterRepositoryInterface
 
     public function upsertForEmployeeDate(string $propertyCode, int $employeeId, string $date, array $data)
     {
-        // either create or update existing
         $record = DutyRoster::where('property_code', $propertyCode)
             ->where('employee_id', $employeeId)
             ->where('roster_date', $date)
@@ -59,7 +60,7 @@ class DutyRosterRepository implements DutyRosterRepositoryInterface
         $data = array_merge($data, [
             'property_code' => $propertyCode,
             'employee_id' => $employeeId,
-            'roster_date' => $date
+            'roster_date' => $date,
         ]);
 
         return DutyRoster::create($data);

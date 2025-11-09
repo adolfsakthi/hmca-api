@@ -81,4 +81,8 @@ composer require laravel/telescope --dev
 
 php artisan db:seed --class=DatabaseSeeder
 
+composer require phpoffice/phpspreadsheet
+
+composer require maatwebsite/excel
+
 <!-- composer require php-open-source-saver/jwt-auth --no-interaction -->
