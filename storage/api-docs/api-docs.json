@@ -83,6 +83,247 @@
                 ]
             }
         },
+        "/api/hrms/employees": {
+            "get": {
+                "tags": [
+                    "HRMS Employees"
+                ],
+                "summary": "List employees for the logged-in property",
+                "operationId": "fc88ccb31d9ce24dd70be48051ddeda8",
+                "parameters": [
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "description": "Search text",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "HRMS Employees"
+                ],
+                "summary": "Add new employee",
+                "operationId": "032b41763971dbbf048412d130da8faf",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "first_name",
+                                    "employee_code"
+                                ],
+                                "properties": {
+                                    "first_name": {
+                                        "type": "string",
+                                        "example": "John"
+                                    },
+                                    "last_name": {
+                                        "type": "string",
+                                        "example": "Doe"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "john.doe@example.com"
+                                    },
+                                    "employee_code": {
+                                        "type": "string",
+                                        "example": "EMP001"
+                                    },
+                                    "department": {
+                                        "type": "string",
+                                        "example": "Front Office"
+                                    },
+                                    "designation": {
+                                        "type": "string",
+                                        "example": "Senior Engineer"
+                                    },
+                                    "shift_start_time": {
+                                        "type": "string",
+                                        "example": "09:00"
+                                    },
+                                    "shift_end_time": {
+                                        "type": "string",
+                                        "example": "17:00"
+                                    },
+                                    "date_of_joining": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2023-01-15"
+                                    },
+                                    "outlet": {
+                                        "type": "string",
+                                        "example": "Main Building"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "422": {
+                        "description": "Validation / duplicate code error"
+                    }
+                }
+            }
+        },
+        "/api/hrms/employees/{id}": {
+            "get": {
+                "tags": [
+                    "HRMS Employees"
+                ],
+                "summary": "Get employee details",
+                "operationId": "92fcbce6e9d0d2a9293e591520a210b9",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "HRMS Employees"
+                ],
+                "summary": "Update an employee",
+                "operationId": "a714d0acfbcdb7bec3281da1efca744f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {}
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Updated"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    },
+                    "422": {
+                        "description": "Validation / duplicate code error"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "HRMS Employees"
+                ],
+                "summary": "Delete employee",
+                "operationId": "d4b8f792877f7f468db5d95d04ac0a53",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Deleted"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            }
+        },
+        "/api/hrms/employees/upload": {
+            "post": {
+                "tags": [
+                    "HRMS Employees"
+                ],
+                "summary": "Bulk employee upload (Excel/CSV)",
+                "description": "Accepts a file and returns info. Actual row processing can be added.",
+                "operationId": "4d0d9507b356499f803d1217d6367def",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "file"
+                                ],
+                                "properties": {
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "File accepted"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/hrms/employees/sample/download": {
+            "get": {
+                "tags": [
+                    "HRMS Employees"
+                ],
+                "summary": "Download sample Excel format",
+                "operationId": "d637a30a50647163b238a34c04f588fa",
+                "responses": {
+                    "200": {
+                        "description": "Sample info"
+                    }
+                }
+            }
+        },
         "/api/pms/amenities": {
             "get": {
                 "tags": [
@@ -3086,6 +3327,10 @@
     "tags": [
         {
             "name": "Authentication"
+        },
+        {
+            "name": "HRMS Employees",
+            "description": "HRMS Employee management (Add, Bulk Upload, List, Edit, Delete)"
         },
         {
             "name": "Amenity",

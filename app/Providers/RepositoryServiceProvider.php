@@ -51,6 +51,9 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(HousekeepingRepositoryInterface::class, HousekeepingRepository::class);
         $this->app->bind(POSRepositoryInterface::class, POSRepository::class);
         $this->app->bind(POSItemRepositoryInterface::class, POSItemRepository::class);
+
+        //HR Repositories
+        $this->app->bind(EmployeeRepositoryInterface::class, EmployeeRepository::class);
     }
 
     public function boot() {}

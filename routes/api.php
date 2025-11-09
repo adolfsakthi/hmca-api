@@ -15,6 +15,7 @@ use App\Http\Controllers\PMS\TaxController;
 use App\Http\Controllers\PMS\UserController;
 use App\Http\Controllers\SuperAdmin\ModuleController;
 use App\Http\Controllers\SuperAdmin\PropertyModuleController;
+use App\Http\Controllers\HR\EmployeeController;
 
 
 
@@ -59,3 +60,17 @@ Route::prefix('pms')->middleware(['jwt.custom', 'role:property_admin', 'property
 Route::prefix('pms')->middleware(['jwt.custom', 'role:front_desk', 'property.inject', 'module.access:pms'])->group(function () {
     Route::apiResource('reservations', ReservationController::class);
 });
+
+//HRMS Routes
+Route::prefix('hrms')->middleware(['jwt.custom', 'role:hr,admin', 'property.inject', 'module.access:hrms',])->group(function () {
+
+        Route::get('employees', [EmployeeController::class, 'index']);
+        Route::get('employees/sample/download', [EmployeeController::class, 'downloadSample']);
+
+        Route::post('employees', [EmployeeController::class, 'store']);
+        Route::post('employees/upload', [EmployeeController::class, 'upload']);
+
+        Route::get('employees/{id}', [EmployeeController::class, 'show']);
+        Route::put('employees/{id}', [EmployeeController::class, 'update']);
+        Route::delete('employees/{id}', [EmployeeController::class, 'destroy']);
+    });
