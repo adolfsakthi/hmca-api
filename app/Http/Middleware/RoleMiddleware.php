@@ -53,10 +53,10 @@ class RoleMiddleware
         }
 
         // 🧱 2️⃣ Check role access (supports multiple allowed roles)
-        if (!in_array($user->role, $roles)) {
+        if (!in_array($user->role->slug, $roles)) {
             Log::warning('Role mismatch in RoleMiddleware.', [
                 'allowed_roles' => $roles,
-                'actual_role' => $user->role,
+                'actual_role' => $user->role->slug,
             ]);
 
             return response()->json([

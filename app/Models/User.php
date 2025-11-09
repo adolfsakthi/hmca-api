@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\SuperAdmin\Property;
+use App\Models\SuperAdmin\Role;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
@@ -33,7 +34,7 @@ class User extends Authenticatable implements JWTSubject
         'email',
         'password',
         'role',
-        'property_id'
+        'property_code'
     ];
 
     /**
@@ -62,5 +63,10 @@ class User extends Authenticatable implements JWTSubject
     public function property()
     {
         return $this->belongsTo(Property::class);
+    }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
     }
 }

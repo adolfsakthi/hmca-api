@@ -16,14 +16,13 @@ use App\Http\Controllers\PMS\UserController;
 use App\Http\Controllers\SuperAdmin\ModuleController;
 use App\Http\Controllers\SuperAdmin\PropertyModuleController;
 use App\Http\Controllers\HR\EmployeeController;
-
-
+use App\Http\Controllers\SuperAdmin\RoleController;
 
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware(['jwt.custom'])->group(function () {
     Route::post('/refresh-token', [AuthController::class, 'refreshToken']);
-    Route::middleware('role:super_admin')->group(function () {
+    Route::middleware('role:super-admin')->group(function () {
         // Route::apiResource('property', PropertyController::class);
         Route::get('property', [PropertyController::class, 'index']);
         Route::post('property', [PropertyController::class, 'store']);
@@ -35,14 +34,14 @@ Route::middleware(['jwt.custom'])->group(function () {
         Route::delete('properties/{id}/modules', [PropertyModuleController::class, 'remove']);
         Route::patch('properties/{id}/modules/toggle', [PropertyModuleController::class, 'toggle']);
     });
-    Route::middleware('role:property_admin,super_admin')->group(function () {
+    Route::middleware('role:admin,super-admin')->group(function () {
         Route::get('property/{id}', [PropertyController::class, 'show']);
         Route::put('property/{id}', [PropertyController::class, 'update']);
     });
 });
 
 
-Route::prefix('pms')->middleware(['jwt.custom', 'role:property_admin', 'property.inject', 'module.access:pms'])->group(function () {
+Route::prefix('pms')->middleware(['jwt.custom', 'role:admin', 'property.inject', 'module.access:pms'])->group(function () {
     Route::post('reservations/{id}', [ReservationController::class, 'update']);
     Route::apiResource('rate-types', RateTypeController::class);
     Route::apiResource('users', UserController::class);
@@ -56,21 +55,25 @@ Route::prefix('pms')->middleware(['jwt.custom', 'role:property_admin', 'property
     Route::apiResource('pos/items', POSItemController::class);
 });
 
+Route::middleware(['jwt.custom', 'role:admin', 'property.inject', 'module.access:pms'])->group(function () {
+    Route::apiResource('roles', RoleController::class);
+});
 
-Route::prefix('pms')->middleware(['jwt.custom', 'role:front_desk', 'property.inject', 'module.access:pms'])->group(function () {
+
+Route::prefix('pms')->middleware(['jwt.custom', 'role:frontdesk', 'property.inject', 'module.access:pms'])->group(function () {
     Route::apiResource('reservations', ReservationController::class);
 });
 
 //HRMS Routes
-Route::prefix('hrms')->middleware(['jwt.custom', 'role:hr,property_admin', 'property.inject', 'module.access:hrms',])->group(function () {
+Route::prefix('hrms')->middleware(['jwt.custom', 'role:hr,admin', 'property.inject', 'module.access:hrms',])->group(function () {
 
-        Route::get('employees', [EmployeeController::class, 'index']);
-        Route::get('employees/sample/download', [EmployeeController::class, 'downloadSample']);
+    Route::get('employees', [EmployeeController::class, 'index']);
+    Route::get('employees/sample/download', [EmployeeController::class, 'downloadSample']);
 
-        Route::post('employees', [EmployeeController::class, 'store']);
-        Route::post('employees/upload', [EmployeeController::class, 'upload']);
+    Route::post('employees', [EmployeeController::class, 'store']);
+    Route::post('employees/upload', [EmployeeController::class, 'upload']);
 
-        Route::get('employees/{id}', [EmployeeController::class, 'show']);
-        Route::put('employees/{id}', [EmployeeController::class, 'update']);
-        Route::delete('employees/{id}', [EmployeeController::class, 'destroy']);
-    });
+    Route::get('employees/{id}', [EmployeeController::class, 'show']);
+    Route::put('employees/{id}', [EmployeeController::class, 'update']);
+    Route::delete('employees/{id}', [EmployeeController::class, 'destroy']);
+});

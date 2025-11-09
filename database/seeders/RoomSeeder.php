@@ -20,7 +20,7 @@ class RoomSeeder extends Seeder
 
         $rooms = [
             [
-                'property_code' => 'H001',
+                'property_code' => 'PROP001',
                 'room_type_id' => $deluxe->id,
                 'room_number' => '101',
                 'capacity' => 2,
@@ -36,7 +36,7 @@ class RoomSeeder extends Seeder
                 'status' => RoomStatusEnum::VACANT->value,
             ],
             [
-                'property_code' => 'H001',
+                'property_code' => 'PROP001',
                 'room_type_id' => $suite->id,
                 'room_number' => '102',
                 'capacity' => 3,
@@ -52,7 +52,7 @@ class RoomSeeder extends Seeder
                 'status' => RoomStatusEnum::VACANT->value,
             ],
             [
-                'property_code' => 'H002',
+                'property_code' => 'PROP002',
                 'room_type_id' => $villa->id,
                 'room_number' => '201',
                 'capacity' => 4,

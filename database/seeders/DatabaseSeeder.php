@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\SuperAdmin\Property;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -24,12 +25,12 @@ class DatabaseSeeder extends Seeder
 
 
         $this->call([
-            PropertySeeder::class,
             AmenitySeeder::class,
             RoomTypeSeeder::class,
             RoomSeeder::class,
+            PropertyUserRoleSeeder::class,
             // ReservationSeeder::class,
-            UserSeeder::class
+            // UserSeeder::class
         ]);
     }
 }

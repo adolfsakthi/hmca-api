@@ -7,14 +7,14 @@ use App\Repositories\PMS\Interfaces\UserRepositoryInterface;
 
 class UserRepository implements UserRepositoryInterface
 {
-    public function getAllUserByProperty(int $propertyCode)
+    public function getAllUserByProperty(string $propertyCode)
     {
-        return User::where('property_id', $propertyCode)->get();
+        return User::where('property_code', $propertyCode)->get();
     }
 
     public function findByIdByProperty(int $id, $propertyCode)
     {
-        return User::where('property_id', $propertyCode)
+        return User::where('property_code', $propertyCode)
             ->where('id', $id)
             ->first();
     }

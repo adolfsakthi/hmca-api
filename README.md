@@ -79,4 +79,6 @@ php artisan jwt:secret
 
 composer require laravel/telescope --dev
 
+php artisan db:seed --class=DatabaseSeeder
+
 <!-- composer require php-open-source-saver/jwt-auth --no-interaction -->

@@ -52,7 +52,6 @@ class UserController extends Controller
      *             @OA\Property(property="name", type="string", example="John Doe"),
      *             @OA\Property(property="email", type="string", example="john@example.com"),
      *             @OA\Property(property="password", type="string", example="password123"),
-     *             @OA\Property(property="role", type="string", example="manager"),
      *         )
      *     ),
      *     @OA\Response(response=201, description="User created successfully"),
@@ -66,10 +65,9 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:6',
-            'role' => 'required|string',
-            'property_code' => 'required|string'
         ]);
 
+        $validated['property_code'] = $request->get('property_code');
 
         $response = $this->userService->createUser($validated);
         $status = $response['success'] ? 201 : 400;
@@ -90,7 +88,6 @@ class UserController extends Controller
      *             @OA\Property(property="name", type="string", example="John Doe Updated"),
      *             @OA\Property(property="email", type="string", example="john@example.com"),
      *             @OA\Property(property="password", type="string", example="newpassword123"),
-     *             @OA\Property(property="role", type="string", example="admin"),
      *         )
      *     ),
      *     @OA\Response(response=200, description="User updated successfully"),
@@ -103,7 +100,6 @@ class UserController extends Controller
             'name' => 'sometimes|required|string|max:255',
             'email' => 'sometimes|required|email|unique:users,email,' . $id,
             'password' => 'nullable|string|min:6',
-            'role' => 'sometimes|required|string',
             'property_code' => 'required|string',
         ]);
 

@@ -10,13 +10,13 @@ class AmenitySeeder extends Seeder
     public function run(): void
     {
         $amenities = [
-            ['property_code' => 'H001', 'name' => 'Free Wi-Fi', 'active' => true],
-            ['property_code' => 'H001', 'name' => 'Air Conditioning', 'active' => true],
-            ['property_code' => 'H001', 'name' => 'Room Service', 'active' => true],
-            ['property_code' => 'H001', 'name' => 'Gym', 'active' => true],
-            ['property_code' => 'H002', 'name' => 'Private Beach', 'active' => true],
-            ['property_code' => 'H002', 'name' => 'Spa Access', 'active' => true],
-            ['property_code' => 'H002', 'name' => 'Swimming Pool', 'active' => true],
+            ['property_code' => 'PROP001', 'name' => 'Free Wi-Fi', 'active' => true],
+            ['property_code' => 'PROP001', 'name' => 'Air Conditioning', 'active' => true],
+            ['property_code' => 'PROP001', 'name' => 'Room Service', 'active' => true],
+            ['property_code' => 'PROP001', 'name' => 'Gym', 'active' => true],
+            ['property_code' => 'PROP002', 'name' => 'Private Beach', 'active' => true],
+            ['property_code' => 'PROP002', 'name' => 'Spa Access', 'active' => true],
+            ['property_code' => 'PROP002', 'name' => 'Swimming Pool', 'active' => true],
         ];
 
         foreach ($amenities as $amenity) {

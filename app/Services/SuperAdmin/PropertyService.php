@@ -83,7 +83,7 @@ class PropertyService
                         'name' => $property->property_name ?? 'Property Admin',
                         'email' => $data['email'],
                         'password' => Hash::make('Admin@123'),
-                        'role' => 'property_admin',
+                        'role_id' => $existingUser->role_id,
                         'property_id' => $property->id,
                     ]);
                 }
@@ -192,7 +192,7 @@ class PropertyService
         }
 
         // 🧠 Property Admin can only view their own property
-        if ($user->role === 'property_admin' && $user->property_id !== $property->id) {
+        if ($user->role->slug === 'admin' && $user->property_id !== $property->id) {
             return response()->json([
                 'success' => false,
                 'message' => 'You are not authorized to view this property.'
@@ -217,7 +217,7 @@ class PropertyService
             ], 404);
         }
 
-        if ($user->role === 'property_admin' && $user->property_id !== $property->id) {
+        if ($user->role->slug === 'admin' && $user->property_id !== $property->id) {
             return response()->json([
                 'success' => false,
                 'message' => 'You are not authorized to update this property.'

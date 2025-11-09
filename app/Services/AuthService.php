@@ -40,7 +40,7 @@ class AuthService
         // Handle Super Admin Login
         if ($propertyCode === '000') {
             $user = User::where('email', $email)
-                ->whereNull('property_id')
+                ->whereNull('property_code')
                 ->first();
 
             if (!$user) {
@@ -62,7 +62,7 @@ class AuthService
 
             // Find user for property
             $user = User::where('email', $email)
-                ->where('property_id', $property->id)
+                ->where('property_code', $property->property_code)
                 ->first();
 
             if (!$user) {
@@ -83,24 +83,28 @@ class AuthService
 
         $modules = [];
 
-        if ($user->role === 'super_admin') {
+
+        if ($user->role && $user->role->slug === 'super-admin') {
             // Super admin gets access to all modules
             $modules = Module::pluck('code')->toArray();
-        } elseif ($user->property_id) {
+        } elseif ($user->property_code) {
             // Property user: load assigned modules for that property
             $property = Property::with(['modules' => function ($query) {
                 $query->wherePivot('enabled', true);
-            }])->find($user->property_id);
-
+            }])
+                ->where('property_code', $user->property_code) // ✅ use property_code instead of property_id
+                ->first();
             $modules = $property ? $property->modules->pluck('code')->toArray() : [];
+        } else {
+            $modules = [];
         }
 
         // Custom JWT claims
         $customClaims = [
             'id' => $user->id,
-            'name'=> $user->name,
+            'name' => $user->name,
             'email' => $user->email,
-            'role' => $user->role,
+            'role' => $user->role->name,
             'property_id' => $user->property_id,
             'property_code' => $propertyCode,
             'modules' => $modules
@@ -115,8 +119,8 @@ class AuthService
             'data' => [
                 'id' => $user->id,
                 'email' => $user->email,
-                'role' => $user->role,
-                'property_id' => $user->property_id,
+                'role' => $user->role->name,
+                // 'property_id' => $property->id,
                 'property_code' => $propertyCode,
                 'modules' => $modules,
                 'token' => $token,

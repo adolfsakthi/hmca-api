@@ -10,9 +10,9 @@ class RoomTypeSeeder extends Seeder
     public function run(): void
     {
         $types = [
-            ['property_code' => 'H001', 'name' => 'Deluxe King', 'active' => true],
-            ['property_code' => 'H001', 'name' => 'Executive Suite', 'active' => true],
-            ['property_code' => 'H002', 'name' => 'Ocean Villa', 'active' => true],
+            ['property_code' => 'PROP001', 'name' => 'Deluxe King', 'active' => true],
+            ['property_code' => 'PROP001', 'name' => 'Executive Suite', 'active' => true],
+            ['property_code' => 'PROP002', 'name' => 'Ocean Villa', 'active' => true],
         ];
 
         foreach ($types as $t) {

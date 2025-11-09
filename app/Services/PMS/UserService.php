@@ -32,7 +32,7 @@ class UserService
             ];
         }
 
-        $users = $this->userRepository->getAllUserByProperty($property->id);
+        $users = $this->userRepository->getAllUserByProperty($propertyCode);
 
         return [
             'success' => true,
@@ -52,7 +52,6 @@ class UserService
             ];
         }
 
-        $data['property_id'] = $property->id;
         $data['password'] = Hash::make($data['password']);
 
 
@@ -75,7 +74,7 @@ class UserService
 
     public function updateUser(int $id, array $data): array
     {
-        $property = $this->propertyRepository->findByCode($data['propertyCode'] ?? null);
+        $property = $this->propertyRepository->findByCode($data['property_code'] ?? null);
         if (!$property) {
             return [
                 'success' => false,
@@ -84,7 +83,7 @@ class UserService
             ];
         }
 
-        $user = $this->userRepository->findByIdByProperty($id, $property->id);
+        $user = $this->userRepository->findByIdByProperty($id, $data['property_code']);
         if (!$user) {
             return [
                 'success' => false,
@@ -117,7 +116,7 @@ class UserService
             ];
         }
 
-        $user = $this->userRepository->findByIdByProperty($id, $property->id);
+        $user = $this->userRepository->findByIdByProperty($id, $propertyCode);
         if (!$user) {
             return [
                 'success' => false,

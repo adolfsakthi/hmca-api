@@ -32,8 +32,10 @@ use App\Repositories\PMS\RoomTypeRepository;
 use App\Repositories\PMS\TaxRepository;
 use App\Repositories\SuperAdmin\Interfaces\ModuleRepositoryInterface;
 use App\Repositories\SuperAdmin\Interfaces\PropertyModuleRepositoryInterface;
+use App\Repositories\SuperAdmin\Interfaces\RoleRepositoryInterface;
 use App\Repositories\SuperAdmin\ModuleRepository;
 use App\Repositories\SuperAdmin\PropertyModuleRepository;
+use App\Repositories\SuperAdmin\RoleRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -53,6 +55,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(HousekeepingRepositoryInterface::class, HousekeepingRepository::class);
         $this->app->bind(POSRepositoryInterface::class, POSRepository::class);
         $this->app->bind(POSItemRepositoryInterface::class, POSItemRepository::class);
+        $this->app->bind(RoleRepositoryInterface::class, RoleRepository::class);
 
         //HR Repositories
         $this->app->bind(EmployeeRepositoryInterface::class, EmployeeRepository::class);
