@@ -5,7 +5,7 @@ namespace App\Services\HR;
 use App\Repositories\HR\Interfaces\DutyRosterRepositoryInterface;
 use App\Repositories\HR\Interfaces\EmployeeRepositoryInterface;
 use App\Repositories\HR\Interfaces\ShiftRepositoryInterface;
-use App\Models\RosterImport;
+use App\Models\HR\RosterImport;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Support\Str;
 
@@ -197,8 +197,8 @@ class DutyRosterService
 
         // store import summary (optional model RosterImport)
         $import = null;
-        if (class_exists(\App\Models\RosterImport::class)) {
-            $import = \App\Models\RosterImport::create([
+        if (class_exists(\App\Models\HR\RosterImport::class)) {
+            $import = \App\Models\HR\RosterImport::create([
                 'property_code' => $propertyCode,
                 'file_path' => $stored,
                 'uploaded_by' => $uploadedBy,

@@ -2338,10 +2338,6 @@
                                     "password": {
                                         "type": "string",
                                         "example": "password123"
-                                    },
-                                    "role": {
-                                        "type": "string",
-                                        "example": "manager"
                                     }
                                 },
                                 "type": "object"
@@ -2399,10 +2395,6 @@
                                     "password": {
                                         "type": "string",
                                         "example": "newpassword123"
-                                    },
-                                    "role": {
-                                        "type": "string",
-                                        "example": "admin"
                                     }
                                 },
                                 "type": "object"
