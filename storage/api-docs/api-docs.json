@@ -324,6 +324,159 @@
                 }
             }
         },
+        "/api/hrms/shifts": {
+            "get": {
+                "tags": [
+                    "HRMS Shifts"
+                ],
+                "summary": "List shifts for property",
+                "operationId": "3dcf205ab567bf37c1f4e679fa8a6ac7",
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "description": "search by code or name"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "HRMS Shifts"
+                ],
+                "summary": "Create a shift",
+                "operationId": "74ff13d1aad1fc31cc441c4f73a4eac7",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "code",
+                                    "name"
+                                ],
+                                "properties": {
+                                    "code": {
+                                        "type": "string"
+                                    },
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "start_time": {
+                                        "type": "string",
+                                        "example": "09:00"
+                                    },
+                                    "end_time": {
+                                        "type": "string",
+                                        "example": "17:00"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/hrms/shifts/{id}": {
+            "get": {
+                "tags": [
+                    "HRMS Shifts"
+                ],
+                "operationId": "e963bb0b9752d2191cfe77702ad45ff7",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "HRMS Shifts"
+                ],
+                "operationId": "ebbb2a821fc9e5db15e197f0fe661413",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {}
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Updated"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "HRMS Shifts"
+                ],
+                "operationId": "5df277ace34a26f0f2d7afc6a8e9e174",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Deleted"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            }
+        },
         "/api/pms/amenities": {
             "get": {
                 "tags": [
@@ -3680,6 +3833,10 @@
         {
             "name": "HRMS Employees",
             "description": "HRMS Employee management (Add, Bulk Upload, List, Edit, Delete)"
+        },
+        {
+            "name": "HRMS Shifts",
+            "description": "Manage shifts"
         },
         {
             "name": "Amenity",
