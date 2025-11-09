@@ -16,6 +16,7 @@ use App\Http\Controllers\PMS\UserController;
 use App\Http\Controllers\SuperAdmin\ModuleController;
 use App\Http\Controllers\SuperAdmin\PropertyModuleController;
 use App\Http\Controllers\HR\EmployeeController;
+use App\Http\Controllers\HR\ShiftController;
 
 
 
@@ -73,4 +74,11 @@ Route::prefix('hrms')->middleware(['jwt.custom', 'role:hr,property_admin', 'prop
         Route::get('employees/{id}', [EmployeeController::class, 'show']);
         Route::put('employees/{id}', [EmployeeController::class, 'update']);
         Route::delete('employees/{id}', [EmployeeController::class, 'destroy']);
+
+        //shift management routes
+        Route::get('shifts', [ShiftController::class, 'index']);
+        Route::get('shifts/{id}', [ShiftController::class, 'show']);
+        Route::post('shifts', [ShiftController::class, 'store']);
+        Route::put('shifts/{id}', [ShiftController::class, 'update']);
+        Route::delete('shifts/{id}', [ShiftController::class, 'destroy']);
     });

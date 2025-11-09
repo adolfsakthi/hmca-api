@@ -34,6 +34,8 @@ use App\Repositories\SuperAdmin\Interfaces\ModuleRepositoryInterface;
 use App\Repositories\SuperAdmin\Interfaces\PropertyModuleRepositoryInterface;
 use App\Repositories\SuperAdmin\ModuleRepository;
 use App\Repositories\SuperAdmin\PropertyModuleRepository;
+use App\Repositories\HR\Interfaces\ShiftRepositoryInterface;
+use App\Repositories\HR\ShiftRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -56,6 +58,8 @@ class RepositoryServiceProvider extends ServiceProvider
 
         //HR Repositories
         $this->app->bind(EmployeeRepositoryInterface::class, EmployeeRepository::class);
+        $this->app->bind(ShiftRepositoryInterface::class, ShiftRepository::class);
+
     }
 
     public function boot() {}
