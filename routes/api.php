@@ -18,6 +18,7 @@ use App\Http\Controllers\SuperAdmin\ModuleController;
 use App\Http\Controllers\SuperAdmin\PropertyModuleController;
 use App\Http\Controllers\HR\EmployeeController;
 use App\Http\Controllers\HR\ShiftController;
+use App\Http\Controllers\HR\ESSL\DeviceController;
 
 
 use App\Http\Controllers\SuperAdmin\RoleController;
