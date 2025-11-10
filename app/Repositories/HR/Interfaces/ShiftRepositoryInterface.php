@@ -10,4 +10,5 @@ interface ShiftRepositoryInterface
     public function update(int $id, string $propertyCode, array $data);
     public function delete(int $id, string $propertyCode): bool;
     public function existsByCode(string $propertyCode, string $code, ?int $ignoreId = null): bool;
+    public function findbyCode(string $propertyCode, string $code);
 }

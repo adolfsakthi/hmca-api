@@ -176,7 +176,7 @@ class DutyRosterController extends Controller
     public function upload(UploadRosterRequest $request)
     {
         $propertyCode = $request->get('property_code');
-        $userId = auth()->id();
+        $userId = auth('api')->id();
         $result = $this->service->processBulkUpload($propertyCode, $request->file('file'), $userId);
         return response()->json(['success' => true, 'data' => $result]);
     }

@@ -5,6 +5,8 @@ namespace App\Repositories\HR\Interfaces;
 interface EmployeeRepositoryInterface
 {
     public function paginateByProperty(string $propertyCode, ?string $search, int $perPage = 15);
+    public function findBycode(string  $propertyCode, string $employeeCode);
+    public function getAllbyProduct(string $propertyCode);
     public function findByIdAndProperty(int $id, string $propertyCode);
     public function create(array $data);
     public function update(int $id, string $propertyCode, array $data);

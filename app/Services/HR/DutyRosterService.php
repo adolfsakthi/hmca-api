@@ -40,7 +40,7 @@ class DutyRosterService
     {
         // must contain employee_code or employee_id
         if (isset($data['employee_code'])) {
-            $employee = $this->employeeRepo->findByEmployeeCode($propertyCode, $data['employee_code']);
+            $employee = $this->employeeRepo->findBycode($propertyCode, $data['employee_code']);
             if (!$employee) return null;
             $data['employee_id'] = $employee->id;
             unset($data['employee_code']);
@@ -143,7 +143,7 @@ class DutyRosterService
 
         $employeesByCode = [];
         if (method_exists($this->employeeRepo, 'getAllByProperty')) {
-            $emps = $this->employeeRepo->getAllByProperty($propertyCode);
+            $emps = $this->employeeRepo->getAllbyProduct($propertyCode);
             foreach ($emps as $e) {
                 $employeesByCode[strtoupper(trim($e->employee_code))] = $e;
             }

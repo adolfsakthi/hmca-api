@@ -11,9 +11,9 @@ class ShiftRepository implements ShiftRepositoryInterface
     {
         $q = Shift::where('property_code', $propertyCode);
         if ($search) {
-            $q->where(function($qr) use ($search) {
+            $q->where(function ($qr) use ($search) {
                 $qr->where('code', 'like', "%$search%")
-                   ->orWhere('name', 'like', "%$search%");
+                    ->orWhere('name', 'like', "%$search%");
             });
         }
         $q->orderBy('code');
@@ -51,5 +51,12 @@ class ShiftRepository implements ShiftRepositoryInterface
         $q = Shift::where('property_code', $propertyCode)->where('code', $code);
         if ($ignoreId) $q->where('id', '!=', $ignoreId);
         return $q->exists();
+    }
+
+    public function findbyCode(string $propertyCode, string $code)
+    {
+        $q = Shift::where('property_code', $propertyCode);
+        $q->where('code', $code);
+        return $q->first();
     }
 }

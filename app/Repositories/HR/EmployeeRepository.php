@@ -14,9 +14,9 @@ class EmployeeRepository implements EmployeeRepositoryInterface
         if ($search) {
             $q->where(function ($qr) use ($search) {
                 $qr->where('first_name', 'like', "%$search%")
-                   ->orWhere('last_name', 'like', "%$search%")
-                   ->orWhere('email', 'like', "%$search%")
-                   ->orWhere('employee_code', 'like', "%$search%");
+                    ->orWhere('last_name', 'like', "%$search%")
+                    ->orWhere('email', 'like', "%$search%")
+                    ->orWhere('employee_code', 'like', "%$search%");
             });
         }
 
@@ -63,5 +63,18 @@ class EmployeeRepository implements EmployeeRepositoryInterface
         }
 
         return $q->exists();
+    }
+
+    public function findBycode(string  $propertyCode, string $employeeCode)
+    {
+        $q = Employee::where('property_code', $propertyCode);
+        $q->where('employee_code', $employeeCode);
+        return $q->first();
+    }
+    
+    public function getAllbyProduct(string $propertyCode)
+    {
+        $q = Employee::where('property_code', $propertyCode);
+        return $q->get();
     }
 }
