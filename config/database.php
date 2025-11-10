@@ -62,6 +62,27 @@ return [
             ]) : [],
         ],
 
+                
+        
+        // 'mysql' => [
+        //     'driver' => 'mysql',
+        //     'host' => 'sdb-70.hosting.stackcp.net',
+        //     'port' => '3306',
+        //     'database' => 'hmca_api_dev-35303533bd72',
+        //     'username' => 'hmca_api_dev-35303533bd72',
+        //     'password' => 'HMCAdev^2025',
+        //     'unix_socket' => '',
+        //     'charset' => 'utf8',
+        //     'collation' => 'utf8_unicode_ci',
+        //     'prefix' => '',
+        //     'prefix_indexes' => true,
+        //     'strict' => true,
+        //     'engine' => null,
+        //     'options' => extension_loaded('pdo_mysql') ? array_filter([
+        //         PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+        //     ]) : [],
+        // ],
+
         '4ssql' => [
             'driver' => 'mysql',
             'host' => '127.0.0.1',
