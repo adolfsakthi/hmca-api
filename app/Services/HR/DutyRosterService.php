@@ -7,6 +7,7 @@ use App\Repositories\HR\Interfaces\EmployeeRepositoryInterface;
 use App\Repositories\HR\Interfaces\ShiftRepositoryInterface;
 use App\Models\HR\RosterImport;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class DutyRosterService
@@ -37,18 +38,21 @@ class DutyRosterService
 
     public function store(string $propertyCode, array $data)
     {
-        // data must contain employee_code or employee_id + roster_date
+        // must contain employee_code or employee_id
         if (isset($data['employee_code'])) {
             $employee = $this->employeeRepo->findByEmployeeCode($propertyCode, $data['employee_code']);
-            if (!$employee) {
-                return null;
-            }
+            if (!$employee) return null;
             $data['employee_id'] = $employee->id;
             unset($data['employee_code']);
         }
 
         $data['property_code'] = $propertyCode;
-        return $this->repo->upsertForEmployeeDate($propertyCode, $data['employee_id'], $data['roster_date'], $data);
+        return $this->repo->upsertForEmployeeDate(
+            $propertyCode,
+            $data['employee_id'],
+            $data['roster_date'],
+            $data
+        );
     }
 
     public function update(string $propertyCode, int $id, array $data)
@@ -62,88 +66,103 @@ class DutyRosterService
     }
 
     /**
-     * Process bulk roster upload with a pre-validation pass for employee codes.
-     * Returns summary array with processed counts and error lists.
+     * ✅ Process Bulk Roster Upload (fixed version)
+     * - Uses Storage::disk('public') for file saving
+     * - Ensures file exists before processing
+     * - Validates employee codes before inserting
+     * - Records invalid employee and shift-code errors
      */
     public function processBulkUpload(string $propertyCode, $uploadedFile, ?int $uploadedBy = null): array
     {
-        // store file
+        // 1️⃣ Store file safely
+        $folder = 'roster_uploads';
         $ext = $uploadedFile->getClientOriginalExtension() ?: 'xlsx';
-        $filename = 'roster_uploads/'.date('Ymd_His_').Str::random(6).'.'.$ext;
-        $stored = $uploadedFile->storeAs('public', $filename);
-        $storagePath = storage_path('app/'.$stored);
+        $filename = date('Ymd_His_') . Str::random(6) . '.' . $ext;
 
-        $spreadsheet = IOFactory::load($storagePath);
-        $sheet = $spreadsheet->getActiveSheet();
-        $rows = $sheet->toArray(null, true, true, true);
+        $storedPath = Storage::disk('public')->putFileAs($folder, $uploadedFile, $filename);
+        $absolutePath = Storage::disk('public')->path($storedPath);
 
-        if (count($rows) < 2) {
+        // 2️⃣ Verify file existence
+        if (!file_exists($absolutePath)) {
             return [
-                'stored_path' => $stored,
+                'success' => false,
+                'message' => "File not found after upload at: {$absolutePath}",
                 'total_rows' => 0,
                 'processed' => 0,
                 'invalid_employees' => [],
-                'cell_errors' => [['message' => 'Empty or invalid file']],
+                'cell_errors' => [['message' => 'File storage failed']],
             ];
         }
 
-        // header parse
+        // 3️⃣ Load spreadsheet
+        try {
+            $spreadsheet = IOFactory::load($absolutePath);
+        } catch (\Throwable $e) {
+            return [
+                'success' => false,
+                'message' => 'Failed to read Excel file: ' . $e->getMessage(),
+                'total_rows' => 0,
+                'processed' => 0,
+                'invalid_employees' => [],
+                'cell_errors' => [['message' => $e->getMessage()]],
+            ];
+        }
+
+        $sheet = $spreadsheet->getActiveSheet();
+        $rows = $sheet->toArray(null, true, true, true);
+        if (count($rows) < 2) {
+            return [
+                'success' => false,
+                'message' => 'Empty or invalid Excel file.',
+                'total_rows' => 0,
+                'processed' => 0,
+                'invalid_employees' => [],
+                'cell_errors' => [['message' => 'No rows found']],
+            ];
+        }
+
+        // 4️⃣ Parse header row
         $header = $rows[1];
         $firstCol = array_key_first($header);
-        $colMap = ['employee' => $firstCol];
         $dateCols = [];
-        foreach ($header as $colLetter => $colVal) {
+        foreach ($header as $colLetter => $value) {
             if ($colLetter === $firstCol) continue;
-            $val = trim((string)$colVal);
+            $val = trim((string)$value);
             if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $val)) {
                 $dateCols[$colLetter] = $val;
             }
         }
 
-        // FIRST PASS: collect employee codes
+        // 5️⃣ Pre-fetch employees for this property
         $empCodes = [];
-        $rowIndexesByCode = [];
-        foreach ($rows as $rIdx => $row) {
-            if ($rIdx === 1) continue;
-            $empCode = isset($row[$firstCol]) ? trim((string)$row[$firstCol]) : null;
-            if (!$empCode) continue;
-            $key = strtoupper($empCode);
-            $empCodes[$key] = $key;
-            $rowIndexesByCode[$key][] = $rIdx;
+        foreach ($rows as $idx => $row) {
+            if ($idx === 1) continue;
+            $code = isset($row[$firstCol]) ? trim((string)$row[$firstCol]) : null;
+            if ($code) $empCodes[strtoupper($code)] = true;
         }
 
-        // batch fetch employees for this property if possible
         $employeesByCode = [];
-        if (!empty($empCodes)) {
-            if (method_exists($this->employeeRepo, 'getAllByProperty')) {
-                $emps = $this->employeeRepo->getAllByProperty($propertyCode);
-                foreach ($emps as $e) {
-                    $employeesByCode[strtoupper(trim($e->employee_code))] = $e;
-                }
-            } else {
-                // fallback: single lookups
-                foreach ($empCodes as $codeKey) {
-                    $e = $this->employeeRepo->findByEmployeeCode($propertyCode, $codeKey);
-                    if ($e) $employeesByCode[$codeKey] = $e;
-                }
+        if (method_exists($this->employeeRepo, 'getAllByProperty')) {
+            $emps = $this->employeeRepo->getAllByProperty($propertyCode);
+            foreach ($emps as $e) {
+                $employeesByCode[strtoupper(trim($e->employee_code))] = $e;
             }
         }
 
-        // build invalid employees
+        // 6️⃣ Identify invalid employees
         $invalidEmployees = [];
         $invalidMap = [];
-        foreach ($rowIndexesByCode as $codeKey => $rowsIdx) {
-            if (!isset($employeesByCode[$codeKey])) {
+        foreach ($empCodes as $code => $val) {
+            if (!isset($employeesByCode[$code])) {
                 $invalidEmployees[] = [
-                    'employee_code' => $codeKey,
-                    'rows' => $rowsIdx,
-                    'message' => 'Employee code not found in this property'
+                    'employee_code' => $code,
+                    'message' => 'Employee not found in this property',
                 ];
-                $invalidMap[$codeKey] = true;
+                $invalidMap[$code] = true;
             }
         }
 
-        // SECOND PASS: process valid rows
+        // 7️⃣ Process valid rows
         $total = 0;
         $processed = 0;
         $cellErrors = [];
@@ -151,66 +170,73 @@ class DutyRosterService
         foreach ($rows as $rIdx => $row) {
             if ($rIdx === 1) continue;
             $total++;
-            $empCodeRaw = isset($row[$firstCol]) ? trim((string)$row[$firstCol]) : null;
-            if (!$empCodeRaw) {
-                $cellErrors[] = ['row' => $rIdx, 'messages' => ['Employee code empty']];
-                continue;
-            }
+
+            $empCodeRaw = trim((string)($row[$firstCol] ?? ''));
+            if (!$empCodeRaw) continue;
             $empKey = strtoupper($empCodeRaw);
-            if (isset($invalidMap[$empKey])) {
-                // skip invalid employee rows
-                continue;
-            }
-            $employee = $employeesByCode[$empKey] ?? $this->employeeRepo->findByEmployeeCode($propertyCode, $empCodeRaw);
+
+            if (isset($invalidMap[$empKey])) continue;
+
+            $employee = $employeesByCode[$empKey] ?? null;
             if (!$employee) {
-                // defensive
-                $cellErrors[] = ['row' => $rIdx, 'employee_code' => $empCodeRaw, 'messages' => ['Employee not found']];
+                $cellErrors[] = [
+                    'row' => $rIdx,
+                    'employee_code' => $empCodeRaw,
+                    'messages' => ['Employee not found'],
+                ];
                 continue;
             }
 
-            foreach ($dateCols as $colLetter => $dateStr) {
-                $cellVal = isset($row[$colLetter]) ? trim((string)$row[$colLetter]) : null;
-                if (!$cellVal) continue;
-                $shiftCode = trim($cellVal);
+            // process each date cell
+            foreach ($dateCols as $col => $date) {
+                $shiftCode = trim((string)($row[$col] ?? ''));
+                if (!$shiftCode) continue;
+
                 $shift = $this->shiftRepo->findByCode($propertyCode, $shiftCode);
                 if (!$shift) {
                     $cellErrors[] = [
                         'row' => $rIdx,
                         'employee_code' => $empCodeRaw,
-                        'date' => $dateStr,
+                        'date' => $date,
                         'shift_code' => $shiftCode,
-                        'messages' => ["Shift code '{$shiftCode}' not found for property"]
+                        'messages' => ["Shift code '{$shiftCode}' not found"],
                     ];
                     continue;
                 }
 
-                $rosterData = [
+                $data = [
                     'shift_id' => $shift->id,
                     'start_time' => $shift->start_time,
                     'end_time' => $shift->end_time,
                 ];
 
-                $this->repo->upsertForEmployeeDate($propertyCode, $employee->id, $dateStr, $rosterData);
+                $this->repo->upsertForEmployeeDate($propertyCode, $employee->id, $date, $data);
                 $processed++;
             }
         }
 
-        // store import summary (optional model RosterImport)
+        // 8️⃣ Save import summary (optional)
         $import = null;
-        if (class_exists(\App\Models\HR\RosterImport::class)) {
-            $import = \App\Models\HR\RosterImport::create([
+        if (class_exists(RosterImport::class)) {
+            $import = RosterImport::create([
                 'property_code' => $propertyCode,
-                'file_path' => $stored,
+                'file_path' => $storedPath,
                 'uploaded_by' => $uploadedBy,
                 'total_rows' => $total,
                 'processed_count' => $processed,
                 'error_count' => count($invalidEmployees) + count($cellErrors),
-                'errors' => ['invalid_employees' => $invalidEmployees, 'cell_errors' => $cellErrors],
+                'errors' => [
+                    'invalid_employees' => $invalidEmployees,
+                    'cell_errors' => $cellErrors,
+                ],
             ]);
         }
 
+        // 9️⃣ Return summary
         return [
-            'stored_path' => $stored,
+            'success' => true,
+            'stored_as' => $storedPath,
+            'message' => 'Bulk upload completed.',
             'total_rows' => $total,
             'processed' => $processed,
             'invalid_employees' => $invalidEmployees,
