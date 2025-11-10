@@ -9,7 +9,18 @@ use App\Models\HR\ESSL\Transaction;
 use GuzzleHttp\Client;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log as LaravelLog;
+use App\Jobs\HR\ESSL\SyncDeviceLogsJob;
+use Illuminate\Support\Facades\App;
 
+/**
+ * DeviceService
+ *
+ * Responsibilities:
+ * - CRUD for devices (via repository)
+ * - pingDevice (fsockopen)
+ * - syncDevice (actual SOAP fetch & insert) — delegates to DeviceSoapService when available
+ * - requestSync / requestSyncAll — orchestration (queue or inline)
+ */
 class DeviceService
 {
     protected DeviceRepositoryInterface $repo;
@@ -102,27 +113,43 @@ class DeviceService
     }
 
     /**
-     * Sync logs for a single device for current day.
-     * Returns summary.
+     * Sync logs for a single device for current day (or for provided range).
+     *
+     * This method preserves previous behaviour but delegates parsing & storing to DeviceSoapService
+     * when available in the container. If DeviceSoapService is not bound, the method falls back
+     * to a local implementation — but in this codebase we expect DeviceSoapService to exist.
+     *
+     * @param Device $device
+     * @param string|null $from ISO datetime (optional)
+     * @param string|null $to ISO datetime (optional)
+     * @return array summary (device_id, synced_from, synced_to, fetched, inserted, duplicates, errors)
      */
-    public function syncDevice(Device $device): array
+    public function syncDevice(Device $device, ?string $from = null, ?string $to = null): array
     {
+        // If DeviceSoapService is available in container, delegate to it.
+        if (App::bound(\App\Services\HR\ESSL\DeviceSoapService::class)) {
+            /** @var \App\Services\HR\ESSL\DeviceSoapService $soapService */
+            $soapService = App::make(\App\Services\HR\ESSL\DeviceSoapService::class);
+            return $soapService->syncDevice($device, $from, $to);
+        }
+
+        // Fallback (older inline logic) - keep behaviour identical to previous version.
         $ip = $device->ip_address;
         $port = $device->port ?: 80;
         $serial = $device->serial_number;
         $username = $device->username;
         $password = $device->password; // decrypted via accessor
 
-        // prepare dates: today 00:00:00 to 23:59:59
-        $from = now()->startOfDay()->format('Y-m-d\\TH:i:s');
-        $to = now()->endOfDay()->format('Y-m-d\\TH:i:s');
+        // prepare dates: today 00:00:00 to 23:59:59 or provided range
+        $fromIso = $from ?: now()->startOfDay()->format('Y-m-d\\TH:i:s');
+        $toIso   = $to ?: now()->endOfDay()->format('Y-m-d\\TH:i:s');
 
         $soapBody = '<?xml version="1.0" encoding="utf-8"?>' .
             "<soap:Envelope xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">" .
             '<soap:Body>' .
             '<GetTransactionsLog xmlns="http://tempuri.org/">' .
-            "<FromDateTime>{$from}</FromDateTime>" .
-            "<ToDateTime>{$to}</ToDateTime>" .
+            "<FromDateTime>{$fromIso}</FromDateTime>" .
+            "<ToDateTime>{$toIso}</ToDateTime>" .
             "<SerialNumber>{$serial}</SerialNumber>" .
             "<UserName>{$username}</UserName>" .
             "<UserPassword>{$password}</UserPassword>" .
@@ -221,8 +248,8 @@ class DeviceService
 
         return [
             'device_id' => $device->id,
-            'synced_from' => $from,
-            'synced_to' => $to,
+            'synced_from' => $fromIso,
+            'synced_to' => $toIso,
             'fetched' => $fetched,
             'inserted' => $inserted,
             'duplicates' => $duplicates,
@@ -241,5 +268,48 @@ class DeviceService
             $summary[] = $this->syncDevice($d);
         }
         return $summary;
+    }
+
+    /**
+     * Request sync for a device.
+     *
+     * If $queue=true (default) the method will dispatch a queued job (when queue configured).
+     * If $queue=false or queue driver is sync, it will call syncDevice() inline and return the summary.
+     *
+     * @param Device $device
+     * @param bool $queue
+     * @param string|null $from ISO datetime (optional)
+     * @param string|null $to ISO datetime (optional)
+     * @return array|null
+     */
+    public function requestSync(Device $device, bool $queue = true, ?string $from = null, ?string $to = null): ?array
+    {
+        // If queue is desired and queue driver is not sync, dispatch job
+        if ($queue && config('queue.default') !== 'sync') {
+            SyncDeviceLogsJob::dispatch($device->id, $from, $to);
+            return ['queued' => true, 'device_id' => $device->id];
+        }
+
+        // Inline sync (immediate)
+        return $this->syncDevice($device, $from, $to);
+    }
+
+    /**
+     * Request sync for all devices under a property.
+     *
+     * @param string $propertyCode
+     * @param bool $queue
+     * @param string|null $from
+     * @param string|null $to
+     * @return array
+     */
+    public function requestSyncAll(string $propertyCode, bool $queue = true, ?string $from = null, ?string $to = null): array
+    {
+        $devices = $this->repo->listByProperty($propertyCode);
+        $results = [];
+        foreach ($devices as $d) {
+            $results[] = $this->requestSync($d, $queue, $from, $to);
+        }
+        return $results;
     }
 }

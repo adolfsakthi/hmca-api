@@ -45,10 +45,10 @@ return [
 
         'mysql' => [
             'driver' => 'mysql',
-            'host' => '193.203.184.93',
+            'host' => 'sdb-70.hosting.stackcp.net',
             'port' => '3306',
-            'database' => 'u507662125_hmca_api_dev',
-            'username' => 'u507662125_hmca_api_dev',
+            'database' => 'hmca_api_dev-35303533bd72',
+            'username' => 'hmca_api_dev-35303533bd72',
             'password' => 'HMCAdev^2025',
             'unix_socket' => '',
             'charset' => 'utf8',
