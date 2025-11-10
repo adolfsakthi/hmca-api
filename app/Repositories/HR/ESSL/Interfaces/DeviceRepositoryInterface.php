@@ -9,4 +9,5 @@ interface DeviceRepositoryInterface
     public function create(array $data);
     public function update(int $id, string $propertyCode, array $data);
     public function delete(int $id, string $propertyCode): bool;
+    public function getAlllogsByProperty(string $propertyCode);
 }

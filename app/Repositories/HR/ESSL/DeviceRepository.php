@@ -3,6 +3,7 @@
 namespace App\Repositories\HR\ESSL;
 
 use App\Models\HR\ESSL\Device;
+use App\Models\HR\ESSL\Transaction;
 use App\Repositories\HR\ESSL\Interfaces\DeviceRepositoryInterface;
 
 class DeviceRepository implements DeviceRepositoryInterface
@@ -36,5 +37,11 @@ class DeviceRepository implements DeviceRepositoryInterface
         if (!$dev) return false;
         $dev->delete();
         return true;
+    }
+
+    public function getAlllogsByProperty(string $propertyCode)
+    {
+        $data = Transaction::where('property_code', $propertyCode)->orderBy('id', 'desc')->get();
+        return $data;
     }
 }

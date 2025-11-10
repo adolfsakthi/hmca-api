@@ -771,6 +771,25 @@
                 ]
             }
         },
+        "/api/hrms/devices/alllogs": {
+            "get": {
+                "tags": [
+                    "HRMS - ESSL Devices"
+                ],
+                "summary": "List all logs  for a pdevice",
+                "operationId": "111eb3ce8e8ff692d4e6a939c1a1585d",
+                "responses": {
+                    "200": {
+                        "description": "List of devices returned"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/hrms/employees": {
             "get": {
                 "tags": [

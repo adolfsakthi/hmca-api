@@ -193,4 +193,14 @@ class DeviceService
         }
         return $results;
     }
+
+    public function getLogsByProperty(string $propertyCode)
+    {
+        $logs =  $this->repo->getAlllogsByProperty(($propertyCode));
+        return response()->json([
+            'success' => true,
+            'message' => 'Amenities fetched successfully.',
+            'data' => $logs
+        ], 200);
+    }
 }

@@ -73,39 +73,40 @@ Route::prefix('pms')->middleware(['jwt.custom', 'role:frontdesk', 'property.inje
 Route::prefix('hrms')->middleware(['jwt.custom', 'role:hr,admin', 'property.inject', 'module.access:hrms',])->group(function () {
 
     //employee management routes
-        Route::get('employees', [EmployeeController::class, 'index']);
-        Route::get('employees/sample/download', [EmployeeController::class, 'downloadSample']);
-        Route::post('employees', [EmployeeController::class, 'store']);
-        Route::post('employees/upload', [EmployeeController::class, 'upload']);
-        Route::put('employees/{id}', [EmployeeController::class, 'update']);
-        Route::delete('employees/{id}', [EmployeeController::class, 'destroy']);
-        Route::get('employees/{id}', [EmployeeController::class, 'show']);
+    Route::get('employees', [EmployeeController::class, 'index']);
+    Route::get('employees/sample/download', [EmployeeController::class, 'downloadSample']);
+    Route::post('employees', [EmployeeController::class, 'store']);
+    Route::post('employees/upload', [EmployeeController::class, 'upload']);
+    Route::put('employees/{id}', [EmployeeController::class, 'update']);
+    Route::delete('employees/{id}', [EmployeeController::class, 'destroy']);
+    Route::get('employees/{id}', [EmployeeController::class, 'show']);
 
     //shift management routes
-        Route::get('shifts', [ShiftController::class, 'index']);
-        Route::get('shifts/{id}', [ShiftController::class, 'show']);
-        Route::post('shifts', [ShiftController::class, 'store']);
-        Route::put('shifts/{id}', [ShiftController::class, 'update']);
-        Route::delete('shifts/{id}', [ShiftController::class, 'destroy']);
+    Route::get('shifts', [ShiftController::class, 'index']);
+    Route::get('shifts/{id}', [ShiftController::class, 'show']);
+    Route::post('shifts', [ShiftController::class, 'store']);
+    Route::put('shifts/{id}', [ShiftController::class, 'update']);
+    Route::delete('shifts/{id}', [ShiftController::class, 'destroy']);
 
     //duty roster routes
-        Route::get('rosters', [DutyRosterController::class, 'index']); // weekly view: ?week_start=YYYY-MM-DD
-        Route::get('rosters/sample', [DutyRosterController::class, 'sample']);
-        Route::post('rosters/upload', [DutyRosterController::class, 'upload']);
-        Route::post('rosters', [DutyRosterController::class, 'store']);
-        Route::get('rosters/{id}', [DutyRosterController::class, 'show']);
-        Route::put('rosters/{id}', [DutyRosterController::class, 'update']);
-        Route::delete('rosters/{id}', [DutyRosterController::class, 'destroy']);
+    Route::get('rosters', [DutyRosterController::class, 'index']); // weekly view: ?week_start=YYYY-MM-DD
+    Route::get('rosters/sample', [DutyRosterController::class, 'sample']);
+    Route::post('rosters/upload', [DutyRosterController::class, 'upload']);
+    Route::post('rosters', [DutyRosterController::class, 'store']);
+    Route::get('rosters/{id}', [DutyRosterController::class, 'show']);
+    Route::put('rosters/{id}', [DutyRosterController::class, 'update']);
+    Route::delete('rosters/{id}', [DutyRosterController::class, 'destroy']);
+    Route::get('devices/alllogs', [DeviceController::class, 'alllogs']);
 
     //ESSL Device Routes
-        Route::get('devices', [DeviceController::class, 'index']);
-        Route::post('devices', [DeviceController::class, 'store']);
-        Route::get('devices/{id}', [DeviceController::class, 'show']);
-        Route::put('devices/{id}', [DeviceController::class, 'update']);
-        Route::delete('devices/{id}', [DeviceController::class, 'destroy']);
+    Route::get('devices', [DeviceController::class, 'index']);
+    Route::post('devices', [DeviceController::class, 'store']);
+    Route::get('devices/{id}', [DeviceController::class, 'show']);
+    Route::put('devices/{id}', [DeviceController::class, 'update']);
+    Route::delete('devices/{id}', [DeviceController::class, 'destroy']);
 
-        Route::post('devices/{id}/ping', [DeviceController::class, 'ping']);
-        Route::post('devices/{id}/sync', [DeviceController::class, 'sync']);
-        Route::post('devices/sync-all', [DeviceController::class, 'syncAll']);
-        Route::get('devices/{id}/logs', [DeviceController::class, 'logs']);
+    Route::post('devices/{id}/ping', [DeviceController::class, 'ping']);
+    Route::post('devices/{id}/sync', [DeviceController::class, 'sync']);
+    Route::post('devices/sync-all', [DeviceController::class, 'syncAll']);
+    Route::get('devices/{id}/logs', [DeviceController::class, 'logs']);
 });

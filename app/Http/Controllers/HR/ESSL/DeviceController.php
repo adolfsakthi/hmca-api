@@ -229,7 +229,24 @@ class DeviceController extends Controller
         $propertyCode = $request->get('property_code');
         $dev = $this->service->get($propertyCode, $id);
         if (!$dev) return response()->json(['success' => false, 'message' => 'Device not found'], 404);
-        $logs = $dev->logs()->orderBy('log_datetime','desc')->paginate(50);
+        $logs = $dev->logs()->orderBy('log_datetime', 'desc')->paginate(50);
         return response()->json(['success' => true, 'data' => $logs]);
+    }
+
+
+    /**
+     * @OA\Get(
+     *   path="/api/hrms/devices/alllogs",
+     *   tags={"HRMS - ESSL Devices"},
+     *   summary="List all logs  for a pdevice",
+     *   security={{"bearerAuth":{}}},
+     *   @OA\Response(response=200, description="List of devices returned")
+     * )
+     */
+
+    public function alllogs(Request $request)
+    {
+        $propertyCode = $request->get('property_code');
+        return $this->service->getLogsByProperty($propertyCode);
     }
 }
