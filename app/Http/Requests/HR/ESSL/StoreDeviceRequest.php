@@ -6,7 +6,10 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StoreDeviceRequest extends FormRequest
 {
-    public function authorize(): bool { return true; }
+    public function authorize(): bool
+    {
+        return true;
+    }
 
     public function rules(): array
     {
@@ -18,6 +21,7 @@ class StoreDeviceRequest extends FormRequest
             'username' => 'nullable|string|max:100',
             'password' => 'nullable|string',
             'location' => 'nullable|string|max:150',
+            'status' => 'required|string|max:150'
         ];
     }
 }
