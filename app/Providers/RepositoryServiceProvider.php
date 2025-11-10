@@ -40,6 +40,8 @@ use App\Repositories\HR\ShiftRepository;
 use App\Repositories\SuperAdmin\RoleRepository;
 use App\Repositories\HR\Interfaces\DutyRosterRepositoryInterface;
 use App\Repositories\HR\DutyRosterRepository;
+use App\Repositories\HR\ESSL\Interfaces\DeviceRepositoryInterface;
+use App\Repositories\HR\ESSL\DeviceRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -65,6 +67,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(EmployeeRepositoryInterface::class, EmployeeRepository::class);
         $this->app->bind(ShiftRepositoryInterface::class, ShiftRepository::class);
         $this->app->bind(DutyRosterRepositoryInterface::class, DutyRosterRepository::class);
+        $this->app->bind(DeviceRepositoryInterface::class,DeviceRepository::class);
 
     }
 

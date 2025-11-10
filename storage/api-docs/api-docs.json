@@ -359,6 +359,418 @@
                 }
             }
         },
+        "/api/hrms/devices": {
+            "get": {
+                "tags": [
+                    "HRMS - ESSL Devices"
+                ],
+                "summary": "List all ESSL devices for a property",
+                "operationId": "7ba03ee7023cb129f56620549858e2aa",
+                "parameters": [
+                    {
+                        "name": "property_code",
+                        "in": "query",
+                        "description": "Current property code",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "PROP002"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of devices returned"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "HRMS - ESSL Devices"
+                ],
+                "summary": "Add a new ESSL device",
+                "operationId": "ae4cf5097a8f6c58e4b320108ff00854",
+                "parameters": [
+                    {
+                        "name": "property_code",
+                        "in": "query",
+                        "description": "Current property code",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "PROP002"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "device_name",
+                                    "ip_address"
+                                ],
+                                "properties": {
+                                    "device_name": {
+                                        "type": "string",
+                                        "example": "Main Gate Device"
+                                    },
+                                    "serial_number": {
+                                        "type": "string",
+                                        "example": "JJA1250300597"
+                                    },
+                                    "ip_address": {
+                                        "type": "string",
+                                        "example": "103.159.10.130"
+                                    },
+                                    "port": {
+                                        "type": "integer",
+                                        "example": 81
+                                    },
+                                    "username": {
+                                        "type": "string",
+                                        "example": "Edureka"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "Edureka@123"
+                                    },
+                                    "location": {
+                                        "type": "string",
+                                        "example": "Reception Gate"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Device created successfully"
+                    },
+                    "422": {
+                        "description": "Validation failed"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/hrms/devices/{id}": {
+            "get": {
+                "tags": [
+                    "HRMS - ESSL Devices"
+                ],
+                "summary": "Get specific ESSL device details",
+                "operationId": "924f9ea8742561a07fb24aeeb7f7fdb4",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Device ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "property_code",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "PROP002"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Device details returned"
+                    },
+                    "404": {
+                        "description": "Device not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "HRMS - ESSL Devices"
+                ],
+                "summary": "Update ESSL device details",
+                "operationId": "5b87de8f214ebf209c1cce6e21e44d35",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Device ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "property_code",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "PROP002"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "device_name": {
+                                        "type": "string",
+                                        "example": "Back Gate Device"
+                                    },
+                                    "ip_address": {
+                                        "type": "string",
+                                        "example": "103.159.10.131"
+                                    },
+                                    "port": {
+                                        "type": "integer",
+                                        "example": 8080
+                                    },
+                                    "username": {
+                                        "type": "string",
+                                        "example": "Edureka"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "Edureka@123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Device updated successfully"
+                    },
+                    "404": {
+                        "description": "Device not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "HRMS - ESSL Devices"
+                ],
+                "summary": "Delete a device from HRMS",
+                "operationId": "e6263a14b04ab617a8ea9e5bcc0b67a2",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "property_code",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "PROP002"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Device deleted"
+                    },
+                    "404": {
+                        "description": "Device not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/hrms/devices/{id}/ping": {
+            "post": {
+                "tags": [
+                    "HRMS - ESSL Devices"
+                ],
+                "summary": "Ping the device to test connectivity",
+                "operationId": "c7232c3d894831ee4389282c2bfba59d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "property_code",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "PROP002"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ping result with status online/offline"
+                    },
+                    "404": {
+                        "description": "Device not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/hrms/devices/{id}/sync": {
+            "post": {
+                "tags": [
+                    "HRMS - ESSL Devices"
+                ],
+                "summary": "Sync logs from a specific ESSL device (SOAP API call)",
+                "operationId": "aaeef96e4b67b3840f6962c9f68bda31",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "property_code",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "PROP002"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Device logs synced successfully"
+                    },
+                    "404": {
+                        "description": "Device not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/hrms/devices/sync-all": {
+            "post": {
+                "tags": [
+                    "HRMS - ESSL Devices"
+                ],
+                "summary": "Sync all ESSL devices under the current property",
+                "operationId": "463f987f65486b1d4b957b4d5de67f48",
+                "parameters": [
+                    {
+                        "name": "property_code",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "PROP002"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "All devices synced successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/hrms/devices/{id}/logs": {
+            "get": {
+                "tags": [
+                    "HRMS - ESSL Devices"
+                ],
+                "summary": "Fetch synced punch logs for a specific device",
+                "operationId": "a174f669341db4802e47738c34b1a1b0",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "property_code",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "PROP002"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated list of punch logs"
+                    },
+                    "404": {
+                        "description": "Device not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/hrms/employees": {
             "get": {
                 "tags": [
@@ -4101,6 +4513,10 @@
         {
             "name": "HRMS Duty Roster",
             "description": "Duty roster management endpoints (weekly view, CRUD, bulk upload)"
+        },
+        {
+            "name": "HRMS - ESSL Devices",
+            "description": "Manage biometric (ESSL) devices, test connectivity, and sync logs for HRMS."
         },
         {
             "name": "HRMS Employees",

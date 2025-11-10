@@ -95,4 +95,16 @@ Route::prefix('hrms')->middleware(['jwt.custom', 'role:hr,admin', 'property.inje
         Route::get('rosters/{id}', [DutyRosterController::class, 'show']);
         Route::put('rosters/{id}', [DutyRosterController::class, 'update']);
         Route::delete('rosters/{id}', [DutyRosterController::class, 'destroy']);
+
+    //ESSL Device Routes
+        Route::get('devices', [DeviceController::class, 'index']);
+        Route::post('devices', [DeviceController::class, 'store']);
+        Route::get('devices/{id}', [DeviceController::class, 'show']);
+        Route::put('devices/{id}', [DeviceController::class, 'update']);
+        Route::delete('devices/{id}', [DeviceController::class, 'destroy']);
+
+        Route::post('devices/{id}/ping', [DeviceController::class, 'ping']);
+        Route::post('devices/{id}/sync', [DeviceController::class, 'sync']);
+        Route::post('devices/sync-all', [DeviceController::class, 'syncAll']);
+        Route::get('devices/{id}/logs', [DeviceController::class, 'logs']);
 });
