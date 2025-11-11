@@ -122,20 +122,49 @@ class DeviceService
      */
     public function syncDevice(Device $device, ?string $from = null, ?string $to = null)
     {
-        $soapXml = DevicePunchSyncService::fetchFromSoap($device);
-        $body = (string)$soapXml;
+        try {
+            $soapXml = DevicePunchSyncService::fetchFromSoap($device);
+            LaravelLog::info('soapxml', [$soapXml]);
 
-        // Step 2️⃣ Parse logs
-        $logs = DevicePunchSyncService::parseSoapLogs($body);
+            if (!$soapXml || stripos((string)$soapXml, 'Bad Request') !== false) {
+                $device->status = 'offline';
+                $device->save();
 
-        // Step 3️⃣ Sync based on property + device
-        $summary = DevicePunchSyncService::sync($device, $logs);
+                return response()->json([
+                    'success' => false,
+                    'message' => 'SOAP request failed or returned Bad Request',
+                    'status'  => 'error',
+                ], 400);
+            }
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Sync completed successfully',
-            'data' => $summary,
-        ]);
+            $body = (string)$soapXml;
+
+            $logs = DevicePunchSyncService::parseSoapLogs($body);
+
+            $summary = DevicePunchSyncService::sync($device, $logs);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Sync completed successfully',
+                'data'    => $summary,
+            ]);
+        } catch (\SoapFault $e) {
+            $device->status = 'offline';
+            $device->save();
+            return response()->json([
+                'success' => false,
+                'message' => 'SOAP Fault: ' . $e->getMessage(),
+                'status'  => 'soap_error',
+            ], 500);
+        } catch (\Exception $e) {
+            $device->status = 'offline';
+            $device->save();
+            return response()->json([
+                'success' => false,
+                'message' => 'Unexpected error: ' . $e->getMessage(),
+                'status'  => 'exception',
+            ], 500);
+        }
     }
 
     /**

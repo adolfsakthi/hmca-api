@@ -103,6 +103,7 @@ class DevicePunchSyncService
         $device->last_sync_at = $newLogs->isNotEmpty()
             ? $newLogs->max('punch_at')
             : now();
+        $device->status = "online";
         $device->save();
 
         $summary = [

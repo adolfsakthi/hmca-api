@@ -192,7 +192,7 @@ class DeviceController extends Controller
         $dev = $this->service->get($propertyCode, $id);
         if (!$dev) return response()->json(['success' => false, 'message' => 'Device not found'], 404);
         $res = $this->service->syncDevice($dev);
-        return response()->json(['success' => true, 'data' => $res]);
+        return $res;
     }
 
     /**
