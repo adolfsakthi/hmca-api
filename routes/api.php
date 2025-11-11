@@ -19,8 +19,8 @@ use App\Http\Controllers\SuperAdmin\PropertyModuleController;
 use App\Http\Controllers\HR\EmployeeController;
 use App\Http\Controllers\HR\ShiftController;
 use App\Http\Controllers\HR\ESSL\DeviceController;
-
-
+use App\Http\Controllers\HR\LeaveController;
+use App\Http\Controllers\HR\LeaveTypeController;
 use App\Http\Controllers\SuperAdmin\RoleController;
 
 Route::post('/login', [AuthController::class, 'login']);
@@ -109,4 +109,10 @@ Route::prefix('hrms')->middleware(['jwt.custom', 'role:hr,admin', 'property.inje
     Route::post('devices/{id}/sync', [DeviceController::class, 'sync']);
     Route::post('devices/sync-all', [DeviceController::class, 'syncAll']);
     Route::get('devices/{id}/logs', [DeviceController::class, 'logs']);
+
+    Route::apiResource('leaves', LeaveController::class);
+    Route::post('leaves/{id}/department-decision', [LeaveController::class, 'departmentDecision']);
+    Route::post('leaves/{id}/hr-decision', [LeaveController::class, 'hrDecision']);
+
+    Route::apiResource('leave-types', LeaveTypeController::class);
 });

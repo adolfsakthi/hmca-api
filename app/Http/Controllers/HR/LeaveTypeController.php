@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 
 /**
  * @OA\Tag(name="HRMS - Leave Types", description="Manage leave types")
+ *
  */
 class LeaveTypeController extends Controller
 {
@@ -21,7 +22,12 @@ class LeaveTypeController extends Controller
     }
 
     /**
-     * @OA\Get(path="/api/hrms/leave-types", tags={"HRMS - Leave Types"}, summary="List leave types (no pagination)")
+     * @OA\Get(
+     *     path="/api/hrms/leave-types",
+     *     tags={"HRMS - Leave Types"},
+     *     summary="List all leave types",
+     *     @OA\Response(response=200, description="List of leave types")
+     * )
      */
     public function index(Request $request)
     {
@@ -31,7 +37,25 @@ class LeaveTypeController extends Controller
     }
 
     /**
-     * @OA\Post(path="/api/hrms/leave-types", tags={"HRMS - Leave Types"}, summary="Create leave type")
+     * @OA\Post(
+     *     path="/api/hrms/leave-types",
+     *     tags={"HRMS - Leave Types"},
+     *     summary="Create a new leave type",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"name","short_code","yearly_limit"},
+     *             @OA\Property(property="name", type="string", example="Casual Leave"),
+     *             @OA\Property(property="short_code", type="string", example="CL"),
+     *             @OA\Property(property="yearly_limit", type="integer", example=12),
+     *             @OA\Property(property="carry_forward_limit", type="integer", example=6),
+     *             @OA\Property(property="consider_as", type="string", example="Paid"),
+     *             @OA\Property(property="description", type="string", nullable=true, example="Used for general leave")
+     *         )
+     *     ),
+     *     @OA\Response(response=201, description="Leave type created successfully"),
+     *     @OA\Response(response=422, description="Validation error")
+     * )
      */
     public function store(StoreLeaveTypeRequest $request)
     {
@@ -41,7 +65,31 @@ class LeaveTypeController extends Controller
     }
 
     /**
-     * @OA\Put(path="/api/hrms/leave-types/{id}", tags={"HRMS - Leave Types"}, summary="Update leave type")
+     * @OA\Put(
+     *     path="/api/hrms/leave-types/{id}",
+     *     tags={"HRMS - Leave Types"},
+     *     summary="Update a leave type",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="Leave type ID",
+     *         @OA\Schema(type="integer", example=3)
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="name", type="string", example="Casual Leave"),
+     *             @OA\Property(property="short_code", type="string", example="CL"),
+     *             @OA\Property(property="yearly_limit", type="integer", example=12),
+     *             @OA\Property(property="carry_forward_limit", type="integer", example=6),
+     *             @OA\Property(property="consider_as", type="string", example="Paid"),
+     *             @OA\Property(property="description", type="string", nullable=true, example="Used for general leave")
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="Leave type updated successfully"),
+     *     @OA\Response(response=404, description="Not found")
+     * )
      */
     public function update(UpdateLeaveTypeRequest $request, int $id)
     {
@@ -51,7 +99,20 @@ class LeaveTypeController extends Controller
     }
 
     /**
-     * @OA\Delete(path="/api/hrms/leave-types/{id}", tags={"HRMS - Leave Types"}, summary="Delete leave type")
+     * @OA\Delete(
+     *     path="/api/hrms/leave-types/{id}",
+     *     tags={"HRMS - Leave Types"},
+     *     summary="Delete a leave type",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="Leave type ID",
+     *         @OA\Schema(type="integer", example=3)
+     *     ),
+     *     @OA\Response(response=200, description="Leave type deleted successfully"),
+     *     @OA\Response(response=404, description="Leave type not found")
+     * )
      */
     public function destroy(Request $request, int $id)
     {

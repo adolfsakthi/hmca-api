@@ -1020,6 +1020,403 @@
                 }
             }
         },
+        "/api/hrms/leaves": {
+            "get": {
+                "tags": [
+                    "HRMS - Leaves"
+                ],
+                "summary": "List all leaves (all statuses)",
+                "description": "List leaves (all)",
+                "operationId": "fce989e3977be16312b4e1b95ec0860f",
+                "responses": {
+                    "200": {
+                        "description": "List of all leaves"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "HRMS - Leaves"
+                ],
+                "summary": "Apply for a leave",
+                "operationId": "96dbb1d431ca71189845b8197f7abc9c",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "employee_id",
+                                    "leave_type_id",
+                                    "duration_unit",
+                                    "from_date",
+                                    "to_date"
+                                ],
+                                "properties": {
+                                    "employee_id": {
+                                        "type": "integer",
+                                        "example": 12
+                                    },
+                                    "leave_type_id": {
+                                        "type": "integer",
+                                        "example": 3
+                                    },
+                                    "duration_unit": {
+                                        "type": "string",
+                                        "example": "full"
+                                    },
+                                    "from_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2025-11-12"
+                                    },
+                                    "to_date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2025-11-14"
+                                    },
+                                    "remarks": {
+                                        "type": "string",
+                                        "example": "Personal work",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Leave applied successfully"
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid or missing token"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/hrms/leaves/{id}": {
+            "get": {
+                "tags": [
+                    "HRMS - Leaves"
+                ],
+                "summary": "Get leave detail",
+                "description": "Show leave detail",
+                "operationId": "4cd329c9d348290e9ef7d8d2120dff64",
+                "responses": {
+                    "200": {
+                        "description": "Leave details"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "HRMS - Leaves"
+                ],
+                "summary": "Cancel/Delete leave",
+                "description": "Cancel / delete leave",
+                "operationId": "e8ff77add495c39da4ede8d4a051a314",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Leave ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 12
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Leave deleted successfully"
+                    },
+                    "404": {
+                        "description": "Leave not found"
+                    }
+                }
+            }
+        },
+        "/api/hrms/leaves/{id}/department-decision": {
+            "post": {
+                "tags": [
+                    "HRMS - Leaves"
+                ],
+                "summary": "Department decision (approve/reject)",
+                "description": "Department head decision",
+                "operationId": "43674b7aeb0cb99f97d87f31539aa0fb",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Leave ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 12
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "approve"
+                                ],
+                                "properties": {
+                                    "approve": {
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "remarks": {
+                                        "type": "string",
+                                        "example": "Approved - all clear"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Decision updated successfully"
+                    },
+                    "404": {
+                        "description": "Leave not found"
+                    }
+                }
+            }
+        },
+        "/api/hrms/leaves/{id}/hr-decision": {
+            "post": {
+                "tags": [
+                    "HRMS - Leaves"
+                ],
+                "summary": "HR/Admin decision (approve/reject)",
+                "description": "HR/Admin final decision",
+                "operationId": "9f821a5b1426563271029bcb6535a17d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Leave ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 12
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "approve"
+                                ],
+                                "properties": {
+                                    "approve": {
+                                        "type": "boolean",
+                                        "example": false
+                                    },
+                                    "remarks": {
+                                        "type": "string",
+                                        "example": "Insufficient leave balance"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "HR decision applied successfully"
+                    },
+                    "404": {
+                        "description": "Leave not found"
+                    }
+                }
+            }
+        },
+        "/api/hrms/leave-types": {
+            "get": {
+                "tags": [
+                    "HRMS - Leave Types"
+                ],
+                "summary": "List all leave types",
+                "operationId": "8b614312722ff38663b708429fad22c8",
+                "responses": {
+                    "200": {
+                        "description": "List of leave types"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "HRMS - Leave Types"
+                ],
+                "summary": "Create a new leave type",
+                "operationId": "def1b54425dee751e7ffff5036c9705b",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "short_code",
+                                    "yearly_limit"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Casual Leave"
+                                    },
+                                    "short_code": {
+                                        "type": "string",
+                                        "example": "CL"
+                                    },
+                                    "yearly_limit": {
+                                        "type": "integer",
+                                        "example": 12
+                                    },
+                                    "carry_forward_limit": {
+                                        "type": "integer",
+                                        "example": 6
+                                    },
+                                    "consider_as": {
+                                        "type": "string",
+                                        "example": "Paid"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Used for general leave",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Leave type created successfully"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/hrms/leave-types/{id}": {
+            "put": {
+                "tags": [
+                    "HRMS - Leave Types"
+                ],
+                "summary": "Update a leave type",
+                "operationId": "07a3d46f608a044985e8aadac7559f35",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Leave type ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 3
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Casual Leave"
+                                    },
+                                    "short_code": {
+                                        "type": "string",
+                                        "example": "CL"
+                                    },
+                                    "yearly_limit": {
+                                        "type": "integer",
+                                        "example": 12
+                                    },
+                                    "carry_forward_limit": {
+                                        "type": "integer",
+                                        "example": 6
+                                    },
+                                    "consider_as": {
+                                        "type": "string",
+                                        "example": "Paid"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Used for general leave",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Leave type updated successfully"
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "HRMS - Leave Types"
+                ],
+                "summary": "Delete a leave type",
+                "operationId": "399b6e84c31ae676f595fdbfb6589d95",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Leave type ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 3
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Leave type deleted successfully"
+                    },
+                    "404": {
+                        "description": "Leave type not found"
+                    }
+                }
+            }
+        },
         "/api/hrms/shifts": {
             "get": {
                 "tags": [
@@ -4529,6 +4926,14 @@
         {
             "name": "HRMS Employees",
             "description": "HRMS Employee management (Add, Bulk Upload, List, Edit, Delete)"
+        },
+        {
+            "name": "HRMS - Leaves",
+            "description": "Apply and manage employee leaves"
+        },
+        {
+            "name": "HRMS - Leave Types",
+            "description": "Manage leave types"
         },
         {
             "name": "HRMS Shifts",
