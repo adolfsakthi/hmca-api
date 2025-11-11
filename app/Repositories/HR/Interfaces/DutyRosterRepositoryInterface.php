@@ -5,6 +5,7 @@ namespace App\Repositories\HR\Interfaces;
 interface DutyRosterRepositoryInterface
 {
     public function listForWeek(string $propertyCode, string $weekStartDate);
+    public function getAllByProperty(string $propertyCode);
     public function findByIdAndProperty(int $id, string $propertyCode);
     public function create(array $data);
     public function update(int $id, string $propertyCode, array $data);

@@ -26,6 +26,11 @@ class DutyRosterService
         $this->shiftRepo = $shiftRepo;
     }
 
+    public function GetAllByProeprty(string $propertyCode)
+    {
+        return $this->repo->getAllByProperty($propertyCode);
+    }
+
     public function listForWeek(string $propertyCode, string $weekStartDate)
     {
         return $this->repo->listForWeek($propertyCode, $weekStartDate);

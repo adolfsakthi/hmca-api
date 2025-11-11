@@ -7,12 +7,19 @@ use App\Repositories\HR\Interfaces\DutyRosterRepositoryInterface;
 
 class DutyRosterRepository implements DutyRosterRepositoryInterface
 {
+
+    public function getAllByProperty(string $propertyCode)
+    {
+        return DutyRoster::with(['employee', 'shift'])
+            ->where('property_code', $propertyCode)
+            ->get();
+    }
     public function listForWeek(string $propertyCode, string $weekStartDate)
     {
         $start = $weekStartDate;
         $end = date('Y-m-d', strtotime("$start +6 days"));
 
-        return DutyRoster::with(['employee','shift'])
+        return DutyRoster::with(['employee', 'shift'])
             ->where('property_code', $propertyCode)
             ->whereBetween('roster_date', [$start, $end])
             ->orderBy('roster_date')

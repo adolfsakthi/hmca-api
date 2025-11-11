@@ -30,7 +30,6 @@ class DutyRosterController extends Controller
      *   tags={"HRMS Duty Roster"},
      *   summary="Get weekly duty roster grouped by date and shift",
      *   description="Provide week_start (YYYY-MM-DD) to get roster for that week (7 days).",
-     *   @OA\Parameter(name="week_start", in="query", required=false, @OA\Schema(type="string", format="date")),
      *   @OA\Response(response=200, description="OK",
      *     @OA\JsonContent(
      *       @OA\Property(property="success", type="boolean", example=true),
@@ -42,8 +41,8 @@ class DutyRosterController extends Controller
     public function index(Request $request)
     {
         $propertyCode = $request->get('property_code');
-        $weekStart = $request->get('week_start', date('Y-m-d'));
-        $rows = $this->service->listForWeek($propertyCode, $weekStart);
+        // $weekStart = $request->get('week_start', date('Y-m-d'));
+        $rows = $this->service->GetAllByProeprty($propertyCode);
 
         $grouped = [];
         foreach ($rows as $r) {

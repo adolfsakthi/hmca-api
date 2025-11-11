@@ -76,7 +76,7 @@ class DevicePunchSyncService
             ->where('property_code', $propertyCode)
             ->orderByDesc('punch_at')
             ->value('punch_at');
-
+            
         $lastPunchTime = $lastPunch ? Carbon::parse($lastPunch) : null;
 
         // 🧩 Filter logs newer than last punch

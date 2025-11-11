@@ -91,17 +91,6 @@
                 "summary": "Get weekly duty roster grouped by date and shift",
                 "description": "Provide week_start (YYYY-MM-DD) to get roster for that week (7 days).",
                 "operationId": "3aacd423ccfeb09ecb9a93cc20c591d7",
-                "parameters": [
-                    {
-                        "name": "week_start",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "format": "date"
-                        }
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK",
