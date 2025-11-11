@@ -42,6 +42,12 @@ use App\Repositories\HR\Interfaces\DutyRosterRepositoryInterface;
 use App\Repositories\HR\DutyRosterRepository;
 use App\Repositories\HR\ESSL\Interfaces\DeviceRepositoryInterface;
 use App\Repositories\HR\ESSL\DeviceRepository;
+use App\Repositories\HR\LeaveTypeRepository;
+use App\Repositories\HR\Interfaces\LeaveTypeRepositoryInterface;
+use App\Repositories\HR\Interfaces\LeaveRepositoryInterface;
+use App\Repositories\HR\LeaveRepository;
+use App\Repositories\HR\Interfaces\LeaveApprovalRepositoryInterface;
+use App\Repositories\HR\LeaveApprovalRepository; 
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -67,8 +73,12 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(EmployeeRepositoryInterface::class, EmployeeRepository::class);
         $this->app->bind(ShiftRepositoryInterface::class, ShiftRepository::class);
         $this->app->bind(DutyRosterRepositoryInterface::class, DutyRosterRepository::class);
-        $this->app->bind(DeviceRepositoryInterface::class,DeviceRepository::class);
+        $this->app->bind(DeviceRepositoryInterface::class, DeviceRepository::class);
 
+        //Leave Management Repositories
+        $this->app->bind(LeaveTypeRepositoryInterface::class,leaveTypeRepository::class);
+        $this->app->bind(LeaveRepositoryInterface::class,LeaveRepository::class);
+        $this->app->bind(LeaveApprovalRepositoryInterface::class,LeaveApprovalRepository::class);
     }
 
     public function boot() {}
