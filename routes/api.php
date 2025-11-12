@@ -60,7 +60,7 @@ Route::prefix('pms')->middleware(['jwt.custom', 'role:admin', 'property.inject',
     Route::apiResource('pos/items', POSItemController::class);
 });
 
-Route::middleware(['jwt.custom', 'role:admin', 'property.inject', 'module.access:pms'])->group(function () {
+Route::middleware(['jwt.custom', 'role:admin', 'property.inject', 'module.access:pms,hrms'])->group(function () {
     Route::apiResource('roles', RoleController::class);
 });
 

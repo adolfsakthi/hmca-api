@@ -71,10 +71,17 @@ class EmployeeRepository implements EmployeeRepositoryInterface
         $q->where('employee_code', $employeeCode);
         return $q->first();
     }
-    
+
     public function getAllbyProduct(string $propertyCode)
     {
         $q = Employee::where('property_code', $propertyCode);
         return $q->get();
+    }
+
+    public function getByEmail($email, $propertyCode)
+    {
+        return Employee::where('property_code', $propertyCode)
+            ->where('email', $email)
+            ->first();
     }
 }

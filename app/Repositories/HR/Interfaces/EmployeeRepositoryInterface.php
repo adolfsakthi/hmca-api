@@ -12,4 +12,5 @@ interface EmployeeRepositoryInterface
     public function update(int $id, string $propertyCode, array $data);
     public function delete(int $id, string $propertyCode): bool;
     public function existsByCode(string $propertyCode, string $employeeCode, ?int $ignoreId = null): bool;
+    public function getByEmail(string $email, string $propertyCode);
 }

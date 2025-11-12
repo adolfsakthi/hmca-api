@@ -7,21 +7,27 @@ use App\Repositories\HR\Interfaces\LeaveTypeRepositoryInterface;
 use App\Repositories\HR\Interfaces\LeaveApprovalRepositoryInterface;
 use Illuminate\Validation\ValidationException;
 use App\Models\HR\Leave;
+use App\Repositories\HR\Interfaces\EmployeeRepositoryInterface;
+use Illuminate\Support\Facades\Log;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class LeaveService
 {
     protected LeaveRepositoryInterface $repo;
     protected LeaveTypeRepositoryInterface $typeRepo;
     protected LeaveApprovalRepositoryInterface $approvalRepo;
+    protected EmployeeRepositoryInterface $employeeRepo;
 
     public function __construct(
         LeaveRepositoryInterface $repo,
         LeaveTypeRepositoryInterface $typeRepo,
-        LeaveApprovalRepositoryInterface $approvalRepo
+        LeaveApprovalRepositoryInterface $approvalRepo,
+        EmployeeRepositoryInterface $employeeRepo
     ) {
         $this->repo = $repo;
         $this->typeRepo = $typeRepo;
         $this->approvalRepo = $approvalRepo;
+        $this->employeeRepo = $employeeRepo;
     }
 
     public function list(string $propertyCode)
@@ -41,33 +47,60 @@ class LeaveService
 
     public function apply(string $propertyCode, array $data)
     {
-        $data['property_code'] = $propertyCode;
-        $data['status'] = 'pending';
-        $data['is_approved'] = false;
 
-        $lt = $this->typeRepo->findByIdAndProperty($data['leave_type_id'] ?? 0, $propertyCode);
-        if (!$lt) {
-            throw ValidationException::withMessages(['leave_type_id' => ['Invalid leave type for this property.']]);
+        $protectedId = null;
+        if ($data['is_approved'] === true) {
+            $payload = JWTAuth::parseToken()->getPayload();
+            $role = $payload->get('role');
+            $email = $payload->get('email');
+
+            if ($role === 'admin') {
+                $protectedId = 'Admin';
+                $data['status'] = "Approved";
+            } else {
+                $emp = $this->employeeRepo->getByEmail($email, $propertyCode);
+                if ($emp) {
+                    $protectedId = $data['employee_code'];
+                    $data['status'] = 'pending';
+                } else {
+                    $protectedId = $role;
+                    $data['status'] = "Approved";
+                }
+            }
+        } else {
+            $data['is_approved'] = false;
         }
 
-        if (empty($data['from_date']) || empty($data['to_date'])) {
-            throw ValidationException::withMessages(['date' => ['From and To date are required.']]);
-        }
+        Log::info('data',[$data['is_approved'],$data['status']]);
+        return $data;
 
-        // create leave
-        $leave = $this->repo->create($data);
+        // $data['property_code'] = $propertyCode;
 
-        // audit row
-        $this->approvalRepo->create([
-            'property_code' => $propertyCode,
-            'leave_id' => $leave->id,
-            'action' => 'applied',
-            'performed_by' => $data['employee_id'] ?? null,
-            'performed_at' => now(),
-            'remarks' => $data['remarks'] ?? null,
-        ]);
+        // $lt = $this->typeRepo->findByIdAndProperty($data['leave_type_id'] ?? 0, $propertyCode);
+        // if (!$lt) {
+        //     throw ValidationException::withMessages(['leave_type_id' => ['Invalid leave type for this property.']]);
+        // }
 
-        return $leave;
+        // if (empty($data['from_date']) || empty($data['to_date'])) {
+        //     throw ValidationException::withMessages(['date' => ['From and To date are required.']]);
+        // }
+
+
+
+        // // create leave
+        // $leave = $this->repo->create($data);
+
+        // // audit row
+        // $this->approvalRepo->create([
+        //     'property_code' => $propertyCode,
+        //     'leave_id' => $leave->id,
+        //     'action' => 'applied',
+        //     'performed_by' => $protectedId,
+        //     'performed_at' => now(),
+        //     'remarks' => $data['remarks'] ?? null,
+        // ]);
+
+        // return $leave;
     }
 
     public function update(string $propertyCode, int $id, array $data)
