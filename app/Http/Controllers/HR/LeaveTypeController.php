@@ -44,9 +44,9 @@ class LeaveTypeController extends Controller
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             required={"name","short_code","yearly_limit"},
+     *             required={"name","short_name","yearly_limit"},
      *             @OA\Property(property="name", type="string", example="Casual Leave"),
-     *             @OA\Property(property="short_code", type="string", example="CL"),
+     *             @OA\Property(property="short_name", type="string", example="CL"),
      *             @OA\Property(property="yearly_limit", type="integer", example=12),
      *             @OA\Property(property="carry_forward_limit", type="integer", example=6),
      *             @OA\Property(property="consider_as", type="string", example="Paid"),
@@ -80,7 +80,7 @@ class LeaveTypeController extends Controller
      *         required=true,
      *         @OA\JsonContent(
      *             @OA\Property(property="name", type="string", example="Casual Leave"),
-     *             @OA\Property(property="short_code", type="string", example="CL"),
+     *             @OA\Property(property="short_name", type="string", example="CL"),
      *             @OA\Property(property="yearly_limit", type="integer", example=12),
      *             @OA\Property(property="carry_forward_limit", type="integer", example=6),
      *             @OA\Property(property="consider_as", type="string", example="Paid"),
