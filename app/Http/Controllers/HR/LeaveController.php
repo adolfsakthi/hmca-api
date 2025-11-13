@@ -51,7 +51,8 @@ class LeaveController extends Controller
      *             @OA\Property(property="duration_unit", type="string", example="full"),
      *             @OA\Property(property="from_date", type="string", format="date", example="2025-11-12"),
      *             @OA\Property(property="to_date", type="string", format="date", example="2025-11-14"),
-     *             @OA\Property(property="remarks", type="string", nullable=true, example="Personal work")
+     *             @OA\Property(property="remarks", type="string", nullable=true, example="Personal work"),
+     *             @OA\Property(property="is_approved", type="boolean", nullable=true, example=true)
      *         )
      *     ),
      *     @OA\Response(response=201, description="Leave applied successfully"),

@@ -5,12 +5,11 @@ namespace App\Http\Controllers\PMS;
 use App\Http\Controllers\Controller;
 use App\Services\PMS\UserService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 /**
  * @OA\Tag(
  *     name="User Management",
- *     description="Manage users in the PMS system"
+ *     description="Manage PMS users"
  * )
  */
 class UserController extends Controller
@@ -24,10 +23,9 @@ class UserController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/pms/users",
+     *     path="/api/users",
      *     tags={"User Management"},
-     *     summary="Get all users by property code",
-     *     security={{"bearerAuth":{}}},
+     *     summary="Get all users",
      *     @OA\Response(response=200, description="Users fetched successfully"),
      *     @OA\Response(response=401, description="Unauthorized")
      * )
@@ -41,30 +39,31 @@ class UserController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/pms/users",
+     *     path="/api/users",
      *     tags={"User Management"},
      *     summary="Create a new user",
-     *     security={{"bearerAuth":{}}},
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             required={"name","email","password","role","property_code"},
+     *             required={"name","email","password","role_id"},
      *             @OA\Property(property="name", type="string", example="John Doe"),
      *             @OA\Property(property="email", type="string", example="john@example.com"),
      *             @OA\Property(property="password", type="string", example="password123"),
+     *             @OA\Property(property="role_id", type="integer", example=1)
      *         )
      *     ),
      *     @OA\Response(response=201, description="User created successfully"),
+     *     @OA\Response(response=400, description="Invalid input"),
      *     @OA\Response(response=422, description="Validation error")
      * )
      */
     public function store(Request $request)
     {
-
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:6',
+            'role_id' => 'required|integer|exists:roles,id',
         ]);
 
         $validated['property_code'] = $request->get('property_code');
@@ -77,17 +76,23 @@ class UserController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/api/pms/users/{id}",
+     *     path="/api/users/{id}",
      *     tags={"User Management"},
      *     summary="Update an existing user",
-     *     security={{"bearerAuth":{}}},
-     *     @OA\Parameter(name="id", in="path", required=true, description="User ID", @OA\Schema(type="integer")),
-     *     @OA\RequestBody(
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
      *         required=true,
+     *         description="User ID",
+     *         @OA\Schema(type="integer", example=10)
+     *     ),
+     *     @OA\RequestBody(
+     *         required=false,
      *         @OA\JsonContent(
-     *             @OA\Property(property="name", type="string", example="John Doe Updated"),
+     *             @OA\Property(property="name", type="string", example="John Updated"),
      *             @OA\Property(property="email", type="string", example="john@example.com"),
-     *             @OA\Property(property="password", type="string", example="newpassword123"),
+     *             @OA\Property(property="password", type="string", example="newpassword"),
+     *             @OA\Property(property="role_id", type="integer", example=2)
      *         )
      *     ),
      *     @OA\Response(response=200, description="User updated successfully"),
@@ -100,6 +105,7 @@ class UserController extends Controller
             'name' => 'sometimes|required|string|max:255',
             'email' => 'sometimes|required|email|unique:users,email,' . $id,
             'password' => 'nullable|string|min:6',
+            'role_id' => 'sometimes|integer',
             'property_code' => 'required|string',
         ]);
 
@@ -109,11 +115,16 @@ class UserController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/api/pms/users/{id}",
+     *     path="/api/users/{id}",
      *     tags={"User Management"},
      *     summary="Delete a user",
-     *     security={{"bearerAuth":{}}},
-     *     @OA\Parameter(name="id", in="path", required=true, description="User ID", @OA\Schema(type="integer")),
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="User ID",
+     *         @OA\Schema(type="integer", example=10)
+     *     ),
      *     @OA\Response(response=200, description="User deleted successfully"),
      *     @OA\Response(response=404, description="User not found")
      * )
@@ -123,6 +134,7 @@ class UserController extends Controller
         $validated = $request->validate([
             'property_code' => 'required|string',
         ]);
+
         $response = $this->userService->deleteUser($id, $validated['property_code']);
         return response()->json($response, $response['success'] ? 200 : 400);
     }

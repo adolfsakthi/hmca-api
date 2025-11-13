@@ -39,7 +39,8 @@ class AuthService
 
         // Handle Super Admin Login
         if ($propertyCode === '000') {
-            $user = User::where('email', $email)
+            $user = User::with('role')
+                ->where('email', $email)
                 ->whereNull('property_code')
                 ->first();
 
@@ -61,7 +62,7 @@ class AuthService
             }
 
             // Find user for property
-            $user = User::where('email', $email)
+            $user = User::with('role')->where('email', $email)
                 ->where('property_code', $property->property_code)
                 ->first();
 
@@ -84,7 +85,7 @@ class AuthService
         $modules = [];
 
 
-        if ($user->role && $user->role->slug === 'super-admin') {
+        if ($user->role && $user->role?->slug === 'super-admin') {
             // Super admin gets access to all modules
             $modules = Module::pluck('code')->toArray();
         } elseif ($user->property_code) {
@@ -104,7 +105,7 @@ class AuthService
             'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
-            'role' => $user->role->name,
+            'role' => $user->role?->name,
             'property_id' => $user->property_id,
             'property_code' => $propertyCode,
             'modules' => $modules
@@ -119,7 +120,7 @@ class AuthService
             'data' => [
                 'id' => $user->id,
                 'email' => $user->email,
-                'role' => $user->role->name,
+                'role' => $user->role?->name,
                 // 'property_id' => $property->id,
                 'property_code' => $propertyCode,
                 'modules' => $modules,

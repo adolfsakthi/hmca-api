@@ -4,6 +4,7 @@ namespace App\Services\PMS;
 
 use App\Repositories\PMS\Interfaces\UserRepositoryInterface;
 use App\Repositories\SuperAdmin\Interfaces\PropertyRepositoryInterface;
+use App\Repositories\SuperAdmin\Interfaces\RoleRepositoryInterface;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 
@@ -11,13 +12,16 @@ class UserService
 {
     protected UserRepositoryInterface $userRepository;
     protected PropertyRepositoryInterface $propertyRepository;
+    protected RoleRepositoryInterface $roleRepository;
 
     public function __construct(
         UserRepositoryInterface $userRepository,
-        PropertyRepositoryInterface $propertyRepository
+        PropertyRepositoryInterface $propertyRepository,
+        RoleRepositoryInterface $roleRepository
     ) {
         $this->userRepository = $userRepository;
         $this->propertyRepository = $propertyRepository;
+        $this->roleRepository = $roleRepository;
     }
 
     public function getAllUser(string $propertyCode): array
@@ -52,9 +56,17 @@ class UserService
             ];
         }
 
+        $role = $this->roleRepository->getRoleById($data['role_id'], $data['property_code']);
+        if (!$role) {
+            return [
+                'success' => false,
+                'message' => 'Invalid role selected.',
+                'data' => [],
+            ];
+        }
+
         $data['password'] = Hash::make($data['password']);
-
-
+        $data['role_id'] = $role->id;
         $user = $this->userRepository->create($data);
 
         if (!$user) {
@@ -90,6 +102,19 @@ class UserService
                 'message' => 'User not found.',
                 'data' => [],
             ];
+        }
+
+        if (isset($data['role_id'])) {
+            $role = $this->roleRepository->getRoleById($data['role_id'], $data['property_code']);
+            if (!$role) {
+                return [
+                    'success' => false,
+                    'message' => 'Invalid role selected.',
+                    'data' => [],
+                ];
+            }
+
+            $data['role_id'] = $role->id;
         }
 
         if (isset($data['password'])) {

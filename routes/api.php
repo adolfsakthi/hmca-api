@@ -49,7 +49,6 @@ Route::middleware(['jwt.custom'])->group(function () {
 Route::prefix('pms')->middleware(['jwt.custom', 'role:admin', 'property.inject', 'module.access:pms'])->group(function () {
     Route::post('reservations/{id}', [ReservationController::class, 'update']);
     Route::apiResource('rate-types', RateTypeController::class);
-    Route::apiResource('users', UserController::class);
     Route::apiResource('rooms', RoomController::class);
     Route::apiResource('amenities', AmenityController::class);
     Route::apiResource('room-type', RoomTypeController::class);
@@ -115,4 +114,9 @@ Route::prefix('hrms')->middleware(['jwt.custom', 'role:hr,admin', 'property.inje
     Route::post('leaves/{id}/hr-decision', [LeaveController::class, 'hrDecision']);
 
     Route::apiResource('leave-types', LeaveTypeController::class);
+});
+
+
+Route::middleware(['jwt.custom', 'role:admin', 'property.inject', 'module.access:pms,hrms'])->group(function () {
+    Route::apiResource('users', UserController::class);
 });

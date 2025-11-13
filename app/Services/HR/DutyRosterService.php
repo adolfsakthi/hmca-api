@@ -6,6 +6,7 @@ use App\Repositories\HR\Interfaces\DutyRosterRepositoryInterface;
 use App\Repositories\HR\Interfaces\EmployeeRepositoryInterface;
 use App\Repositories\HR\Interfaces\ShiftRepositoryInterface;
 use App\Models\HR\RosterImport;
+use Illuminate\Support\Facades\Log;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -149,6 +150,7 @@ class DutyRosterService
         $employeesByCode = [];
         if (method_exists($this->employeeRepo, 'getAllByProperty')) {
             $emps = $this->employeeRepo->getAllbyProduct($propertyCode);
+            Log::info("emps", [$emps]);
             foreach ($emps as $e) {
                 $employeesByCode[strtoupper(trim($e->employee_code))] = $e;
             }

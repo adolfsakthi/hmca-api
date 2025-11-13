@@ -48,6 +48,7 @@ class LeaveService
     public function apply(string $propertyCode, array $data)
     {
 
+        Log::info($data);
         $protectedId = null;
         if ($data['is_approved'] === true) {
             $payload = JWTAuth::parseToken()->getPayload();
@@ -72,25 +73,25 @@ class LeaveService
         }
 
         Log::info('data',[$data['is_approved'],$data['status']]);
-        return $data;
+        // return $data;
 
-        // $data['property_code'] = $propertyCode;
+        $data['property_code'] = $propertyCode;
 
-        // $lt = $this->typeRepo->findByIdAndProperty($data['leave_type_id'] ?? 0, $propertyCode);
-        // if (!$lt) {
-        //     throw ValidationException::withMessages(['leave_type_id' => ['Invalid leave type for this property.']]);
-        // }
+        $lt = $this->typeRepo->findByIdAndProperty($data['leave_type_id'] ?? 0, $propertyCode);
+        if (!$lt) {
+            throw ValidationException::withMessages(['leave_type_id' => ['Invalid leave type for this property.']]);
+        }
 
-        // if (empty($data['from_date']) || empty($data['to_date'])) {
-        //     throw ValidationException::withMessages(['date' => ['From and To date are required.']]);
-        // }
+        if (empty($data['from_date']) || empty($data['to_date'])) {
+            throw ValidationException::withMessages(['date' => ['From and To date are required.']]);
+        }
 
 
 
-        // // create leave
-        // $leave = $this->repo->create($data);
+        // create leave
+        $leave = $this->repo->create($data);
 
-        // // audit row
+        // audit row
         // $this->approvalRepo->create([
         //     'property_code' => $propertyCode,
         //     'leave_id' => $leave->id,
@@ -100,7 +101,7 @@ class LeaveService
         //     'remarks' => $data['remarks'] ?? null,
         // ]);
 
-        // return $leave;
+        return $leave;
     }
 
     public function update(string $propertyCode, int $id, array $data)

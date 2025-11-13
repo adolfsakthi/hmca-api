@@ -1079,6 +1079,11 @@
                                         "type": "string",
                                         "example": "Personal work",
                                         "nullable": true
+                                    },
+                                    "is_approved": {
+                                        "type": "boolean",
+                                        "example": true,
+                                        "nullable": true
                                     }
                                 },
                                 "type": "object"
@@ -1279,7 +1284,7 @@
                             "schema": {
                                 "required": [
                                     "name",
-                                    "short_code",
+                                    "short_name",
                                     "yearly_limit"
                                 ],
                                 "properties": {
@@ -1287,7 +1292,7 @@
                                         "type": "string",
                                         "example": "Casual Leave"
                                     },
-                                    "short_code": {
+                                    "short_name": {
                                         "type": "string",
                                         "example": "CL"
                                     },
@@ -1353,7 +1358,7 @@
                                         "type": "string",
                                         "example": "Casual Leave"
                                     },
-                                    "short_code": {
+                                    "short_name": {
                                         "type": "string",
                                         "example": "CL"
                                     },
@@ -3380,13 +3385,13 @@
                 ]
             }
         },
-        "/api/pms/users": {
+        "/api/users": {
             "get": {
                 "tags": [
                     "User Management"
                 ],
-                "summary": "Get all users by property code",
-                "operationId": "e439fedcd4de1c4f6e060ecb561fb03a",
+                "summary": "Get all users",
+                "operationId": "343a76fa5f71a28c2f6fc84e28de51ca",
                 "responses": {
                     "200": {
                         "description": "Users fetched successfully"
@@ -3394,19 +3399,14 @@
                     "401": {
                         "description": "Unauthorized"
                     }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
+                }
             },
             "post": {
                 "tags": [
                     "User Management"
                 ],
                 "summary": "Create a new user",
-                "operationId": "826c14935220a748ce9ecf9610bc5c99",
+                "operationId": "e6e1d6e3035c2bd64303215af8037398",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -3416,8 +3416,7 @@
                                     "name",
                                     "email",
                                     "password",
-                                    "role",
-                                    "property_code"
+                                    "role_id"
                                 ],
                                 "properties": {
                                     "name": {
@@ -3431,6 +3430,10 @@
                                     "password": {
                                         "type": "string",
                                         "example": "password123"
+                                    },
+                                    "role_id": {
+                                        "type": "integer",
+                                        "example": 1
                                     }
                                 },
                                 "type": "object"
@@ -3442,24 +3445,22 @@
                     "201": {
                         "description": "User created successfully"
                     },
+                    "400": {
+                        "description": "Invalid input"
+                    },
                     "422": {
                         "description": "Validation error"
                     }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
+                }
             }
         },
-        "/api/pms/users/{id}": {
+        "/api/users/{id}": {
             "put": {
                 "tags": [
                     "User Management"
                 ],
                 "summary": "Update an existing user",
-                "operationId": "afbbc51f0ef2917d624fca38c074e1ba",
+                "operationId": "85382c1041c88ed4fbd59b63b225ff63",
                 "parameters": [
                     {
                         "name": "id",
@@ -3467,19 +3468,20 @@
                         "description": "User ID",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "integer",
+                            "example": 10
                         }
                     }
                 ],
                 "requestBody": {
-                    "required": true,
+                    "required": false,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "properties": {
                                     "name": {
                                         "type": "string",
-                                        "example": "John Doe Updated"
+                                        "example": "John Updated"
                                     },
                                     "email": {
                                         "type": "string",
@@ -3487,7 +3489,11 @@
                                     },
                                     "password": {
                                         "type": "string",
-                                        "example": "newpassword123"
+                                        "example": "newpassword"
+                                    },
+                                    "role_id": {
+                                        "type": "integer",
+                                        "example": 2
                                     }
                                 },
                                 "type": "object"
@@ -3502,19 +3508,14 @@
                     "404": {
                         "description": "User not found"
                     }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
+                }
             },
             "delete": {
                 "tags": [
                     "User Management"
                 ],
                 "summary": "Delete a user",
-                "operationId": "edc64e3e33623f8e5772693032ecad03",
+                "operationId": "1bd31f772e2c7ee8425058fa436c7732",
                 "parameters": [
                     {
                         "name": "id",
@@ -3522,7 +3523,8 @@
                         "description": "User ID",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "integer",
+                            "example": 10
                         }
                     }
                 ],
@@ -3533,12 +3535,7 @@
                     "404": {
                         "description": "User not found"
                     }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
+                }
             }
         },
         "/api/modules": {
@@ -4969,7 +4966,7 @@
         },
         {
             "name": "User Management",
-            "description": "Manage users in the PMS system"
+            "description": "Manage PMS users"
         },
         {
             "name": "Modules",

@@ -39,7 +39,7 @@ class EmployeeController extends Controller
     {
         $propertyCode = $request->get('property_code');
         $search = $request->get('q');
-        $perPage = (int) $request->get('per_page', 15);
+        $perPage = (int) $request->get('per_page', 100);
 
         $employees = $this->employeeService->list($propertyCode, $search, $perPage);
 
