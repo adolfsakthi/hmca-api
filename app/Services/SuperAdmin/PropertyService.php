@@ -83,7 +83,7 @@ class PropertyService
                         'name' => $property->property_name ?? 'Property Admin',
                         'email' => $data['email'],
                         'password' => Hash::make('Admin@123'),
-                        'role_id' => $existingUser->role_id,
+                        'role_id' => 2,
                         'property_id' => $property->id,
                     ]);
                 }
