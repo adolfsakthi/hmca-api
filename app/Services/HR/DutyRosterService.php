@@ -144,6 +144,7 @@ class DutyRosterService
         foreach ($rows as $idx => $row) {
             if ($idx === 1) continue;
             $code = isset($row[$firstCol]) ? trim((string)$row[$firstCol]) : null;
+            Log::info('info',[$code]);
             if ($code) $empCodes[strtoupper($code)] = true;
         }
 

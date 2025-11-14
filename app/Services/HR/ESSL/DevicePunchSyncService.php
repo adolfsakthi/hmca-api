@@ -15,9 +15,10 @@ class DevicePunchSyncService
 
 
         $url = "http://{$device->ip_address}:{$device->port}/WebAPIService.asmx";
-        $from = $device->last_sync_at
-            ? Carbon::parse($device->last_sync_at)
-            : now()->startOfDay();
+        // $from = $device->last_sync_at
+        //     ? Carbon::parse($device->last_sync_at)
+        //     : now()->startOfDay();
+        $from = now()->subDays(4)->startOfDay()->format('Y-m-d\T00:00:00');
         $to = now()->endOfDay()->format('Y-m-d\T23:59:59');
 
         $body = '<?xml version="1.0" encoding="utf-8"?>' .
@@ -76,7 +77,7 @@ class DevicePunchSyncService
             ->where('property_code', $propertyCode)
             ->orderByDesc('punch_at')
             ->value('punch_at');
-            
+
         $lastPunchTime = $lastPunch ? Carbon::parse($lastPunch) : null;
 
         // 🧩 Filter logs newer than last punch
